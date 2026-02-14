@@ -1,14 +1,14 @@
-import { Link } from "react-router-dom"
-import { motion, AnimatePresence } from "framer-motion"
-import { useState, useEffect } from "react"
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { ArrowRight } from "lucide-react";
 
-import slide1 from "../../assets/images/slide1.jpg"
-import slide2 from "../../assets/images/slide2.jpg"
-import slide3 from "../../assets/images/slide3.jpg"
-import slide4 from "../../assets/images/slide4.jpg"
+import slide1 from "../../assets/images/slide1.jpg";
+import slide2 from "../../assets/images/slide2.jpg";
+import slide3 from "../../assets/images/slide3.jpg";
+import slide4 from "../../assets/images/slide4.jpg";
 
 function Home() {
-
   const slides = [
     {
       title: "Digital Grama Niladhari Services",
@@ -34,23 +34,23 @@ function Home() {
         "Monitor the progress of your requests in real time.",
       image: slide4,
     },
-  ]
+  ];
 
-  const [currentSlide, setCurrentSlide] = useState(0)
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length)
-    }, 4000)
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 4000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div>
 
       {/* HERO SECTION */}
-      <section className="relative h-[600px] flex items-center text-white overflow-hidden">
+      <section className="relative h-150 flex items-center text-white overflow-hidden">
 
         {/* Background */}
         <div
@@ -60,7 +60,6 @@ function Home() {
 
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/50 via-primary/40 to-primary/30"></div>
-
 
         {/* Content */}
         <div className="relative max-w-7xl mx-auto px-6 w-full grid md:grid-cols-2 gap-12 items-center">
@@ -81,21 +80,23 @@ function Home() {
                 {slides[currentSlide].description}
               </p>
 
-              <div className="flex space-x-4">
+              {/* Get Started Button */}
+              <div className="flex">
                 <Link
                   to="/register"
-                  className="bg-white text-primary font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100 transition"
+                  className="group inline-flex items-center gap-4 px-10 py-4 rounded-full 
+                             bg-accent text-green-900 text-lg font-semibold 
+                             shadow-md transition duration-300 hover:scale-105"
                 >
-                  Register
-                </Link>
+                  <span>Get Started</span>
 
-                <Link
-                  to="/login"
-                  className="bg-accent px-6 py-3 rounded-lg font-semibold shadow hover:opacity-90 transition"
-                >
-                  Login
+                  <ArrowRight
+                    size={22}
+                    className="transition-transform duration-300 group-hover:translate-x-2"
+                  />
                 </Link>
               </div>
+
             </motion.div>
           </AnimatePresence>
 
@@ -144,7 +145,6 @@ function Home() {
           </div>
 
           <div className="grid md:grid-cols-4 gap-8">
-
             {[
               "Complaint Submission",
               "Appointment Booking",
@@ -167,8 +167,8 @@ function Home() {
                 </p>
               </motion.div>
             ))}
-
           </div>
+
         </div>
       </section>
 
@@ -187,7 +187,6 @@ function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-10 text-center">
-
             {["Register", "Submit Request", "Track & Receive Service"].map((step, index) => (
               <motion.div
                 key={index}
@@ -208,13 +207,13 @@ function Home() {
                 </p>
               </motion.div>
             ))}
-
           </div>
+
         </div>
       </section>
 
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
