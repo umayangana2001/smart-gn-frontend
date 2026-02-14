@@ -2,6 +2,11 @@ import { Link } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
 
+import slide1 from "../../assets/images/slide1.jpg"
+import slide2 from "../../assets/images/slide2.jpg"
+import slide3 from "../../assets/images/slide3.jpg"
+import slide4 from "../../assets/images/slide4.jpg"
+
 function Home() {
 
   const slides = [
@@ -9,21 +14,25 @@ function Home() {
       title: "Digital Grama Niladhari Services",
       description:
         "Access essential government services online with trust and efficiency.",
+      image: slide1,
     },
     {
       title: "Submit Complaints Online",
       description:
         "Easily submit and track complaints directly to your village officer.",
+      image: slide2,
     },
     {
       title: "Book Appointments Easily",
       description:
         "Schedule meetings with your GN officer conveniently.",
+      image: slide3,
     },
     {
       title: "Track Your Service Requests",
       description:
         "Monitor the progress of your requests in real time.",
+      image: slide4,
     },
   ]
 
@@ -40,24 +49,35 @@ function Home() {
   return (
     <div>
 
-      {/* HERO SECTION WITH SLIDESHOW */}
-      <section className="bg-linear-to-br from-primary to-secondary text-white">
-        <div className="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-12 items-center">
+      {/* HERO SECTION */}
+      <section className="relative h-[600px] flex items-center text-white overflow-hidden">
 
-          {/* Left Side Animated Slides */}
+        {/* Background */}
+        <div
+          className="absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out"
+          style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
+        ></div>
+
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/50 via-primary/40 to-primary/30"></div>
+
+
+        {/* Content */}
+        <div className="relative max-w-7xl mx-auto px-6 w-full grid md:grid-cols-2 gap-12 items-center">
+
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSlide}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -30 }}
+              exit={{ opacity: 0, y: -40 }}
               transition={{ duration: 0.6 }}
             >
               <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
                 {slides[currentSlide].title}
               </h1>
 
-              <p className="text-lg text-gray-100 mb-8">
+              <p className="text-lg text-gray-200 mb-8 max-w-xl">
                 {slides[currentSlide].description}
               </p>
 
@@ -79,19 +99,33 @@ function Home() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Right Side Visual Card */}
+          {/* Right Side Card */}
           <div className="hidden md:block">
-            <div className="bg-white/10 backdrop-blur-md p-10 rounded-2xl shadow-xl">
+            <div className="bg-white/10 backdrop-blur-md p-10 rounded-2xl shadow-2xl border border-white/20">
               <h2 className="text-2xl font-semibold mb-4">
                 Serving Your Village Digitally
               </h2>
-              <p className="text-gray-100">
+              <p className="text-gray-200">
                 Submit complaints, book appointments, track requests,
                 and access government services online with ease.
               </p>
             </div>
           </div>
 
+        </div>
+
+        {/* Dots */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
+          {slides.map((_, index) => (
+            <div
+              key={index}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                currentSlide === index
+                  ? "bg-white scale-110"
+                  : "bg-white/50"
+              }`}
+            ></div>
+          ))}
         </div>
       </section>
 
@@ -111,144 +145,73 @@ function Home() {
 
           <div className="grid md:grid-cols-4 gap-8">
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition border-t-4 border-primary"
-            >
-              <h3 className="font-semibold text-lg mb-3 text-primary">
-                Complaint Submission
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Submit complaints directly to your Grama Niladhari officer.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              viewport={{ once: true }}
-              className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition border-t-4 border-secondary"
-            >
-              <h3 className="font-semibold text-lg mb-3 text-secondary">
-                Appointment Booking
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Book appointments easily and manage your time efficiently.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition border-t-4 border-accent"
-            >
-              <h3 className="font-semibold text-lg mb-3 text-accent">
-                Request Tracking
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Track the status of your service requests in real time.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition border-t-4 border-primary"
-            >
-              <h3 className="font-semibold text-lg mb-3 text-primary">
-                Secure Document Upload
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Upload and manage your official documents securely.
-              </p>
-            </motion.div>
+            {[
+              "Complaint Submission",
+              "Appointment Booking",
+              "Request Tracking",
+              "Secure Document Upload"
+            ].map((title, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition border-t-4 border-primary"
+              >
+                <h3 className="font-semibold text-lg mb-3 text-primary">
+                  {title}
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Access this service easily through the Smart GN platform.
+                </p>
+              </motion.div>
+            ))}
 
           </div>
-
         </div>
       </section>
-      {/* HOW IT WORKS SECTION */}
-<section className="bg-white py-20">
-  <div className="max-w-7xl mx-auto px-6">
 
-    <div className="text-center mb-16">
-      <h2 className="text-3xl font-bold text-primary mb-4">
-        How It Works
-      </h2>
-      <p className="text-gray-600">
-        Simple steps to access digital government services.
-      </p>
-    </div>
 
-    <div className="grid md:grid-cols-3 gap-10 text-center">
+      {/* HOW IT WORKS */}
+      <section className="bg-white py-20">
+        <div className="max-w-7xl mx-auto px-6">
 
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="p-8 border rounded-xl shadow-sm hover:shadow-md transition"
-      >
-        <div className="w-14 h-14 mx-auto mb-6 rounded-full bg-primary text-white flex items-center justify-center text-xl font-bold">
-          1
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-primary mb-4">
+              How It Works
+            </h2>
+            <p className="text-gray-600">
+              Simple steps to access digital government services.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-10 text-center">
+
+            {["Register", "Submit Request", "Track & Receive Service"].map((step, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="p-8 border rounded-xl shadow-sm hover:shadow-md transition"
+              >
+                <div className="w-14 h-14 mx-auto mb-6 rounded-full bg-primary text-white flex items-center justify-center text-xl font-bold">
+                  {index + 1}
+                </div>
+                <h3 className="font-semibold text-lg mb-3 text-primary">
+                  {step}
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Follow this step to efficiently use Smart GN services.
+                </p>
+              </motion.div>
+            ))}
+
+          </div>
         </div>
-        <h3 className="font-semibold text-lg mb-3 text-primary">
-          Register
-        </h3>
-        <p className="text-gray-600 text-sm">
-          Create your account securely to access Smart GN services.
-        </p>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        viewport={{ once: true }}
-        className="p-8 border rounded-xl shadow-sm hover:shadow-md transition"
-      >
-        <div className="w-14 h-14 mx-auto mb-6 rounded-full bg-secondary text-white flex items-center justify-center text-xl font-bold">
-          2
-        </div>
-        <h3 className="font-semibold text-lg mb-3 text-secondary">
-          Submit Request
-        </h3>
-        <p className="text-gray-600 text-sm">
-          Submit complaints, service requests, or appointment bookings easily.
-        </p>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        viewport={{ once: true }}
-        className="p-8 border rounded-xl shadow-sm hover:shadow-md transition"
-      >
-        <div className="w-14 h-14 mx-auto mb-6 rounded-full bg-accent text-white flex items-center justify-center text-xl font-bold">
-          3
-        </div>
-        <h3 className="font-semibold text-lg mb-3 text-accent">
-          Track & Receive Service
-        </h3>
-        <p className="text-gray-600 text-sm">
-          Monitor progress and receive updates from your village officer.
-        </p>
-      </motion.div>
-
-    </div>
-
-  </div>
-</section>
-
+      </section>
 
     </div>
   )

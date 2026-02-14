@@ -8,14 +8,19 @@ import OpeningScreen from "./pages/public/OpeningScreen"
 function App() {
   return (
     <Routes>
-      {/* Opening Screen First */}
+
+      {/* Opening screen */}
       <Route path="/" element={<OpeningScreen />} />
 
-      {/* Public Layout Routes */}
+      {/* Public Layout */}
       <Route element={<PublicLayout />}>
+
+        {/* Make Home also accessible at /home */}
         <Route path="/home" element={<Home />} />
+
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
+
       </Route>
     </Routes>
   )

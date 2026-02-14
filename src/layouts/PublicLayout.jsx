@@ -1,4 +1,5 @@
 import { Outlet, Link } from "react-router-dom"
+import logo from "../assets/logo/smart-gn-logo.png"
 
 function PublicLayout() {
   return (
@@ -10,9 +11,12 @@ function PublicLayout() {
 
           {/* Logo Section */}
           <div className="flex items-center space-x-3">
-            <div className="bg-white text-primary font-bold w-10 h-10 flex items-center justify-center rounded-full">
-              GN
-            </div>
+            <img
+                src={logo}
+                alt="Smart GN Logo"
+               className="w-10 h-10 rounded-full object-cover shadow"
+            />
+
             <h1 className="text-lg font-semibold tracking-wide">
               Smart GN System
             </h1>
