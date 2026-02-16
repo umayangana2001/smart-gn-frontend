@@ -8,6 +8,8 @@ import PublicLayout from "./layouts/PublicLayout";
 import Home from "./pages/public/Home";
 import About from "./pages/public/About";
 import Services from "./pages/public/Services";
+import AdminDashboard from "./admin/AdminDashboard";
+import VODashboard from "./villageOfficer/VODashboard";
 
 function App() {
   const location = useLocation();
@@ -22,6 +24,12 @@ function App() {
 
         {/* Opening Screen */}
         <Route path="/" element={<OpeningScreen />} />
+
+        {/* Admin Dashboard */}
+        <Route path="/admin" element={<AdminDashboard />} />
+
+        {/* Village Officer Dashboard */}
+        <Route path="/village-officer" element={<VODashboard />} />
 
         {/* Public Layout */}
         <Route element={<PublicLayout />}>
