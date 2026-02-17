@@ -3,25 +3,23 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, LogOut, User } from "lucide-react";
 
-// User Components Imports
-import UserDashboardPage from "./UserDashboardPage";
-import AddComplaint from "./AddComplaint";
-import Appointment from "./Appointment";
-import MyRequests from "./MyRequests";
-import Profile from "./Profile";
-import ChangePassword from "./ChangePassword"; 
-import UserTopBar from "./UserTopBar";
+// import UserDashboardPage from "./UserDashboardPage.jsx";
+// import AddComplaint from "./AddComplaint.jsx";
+// import Appointment from "./Appointment.jsx";
+// import MyRequests from "./MyRequests.jsx";
+// import Profile from "./Profile.jsx";
+// import ChangePassword from "./ChangePassword.jsx";
+// import TopBar from "./TopBar.jsx";
 
 import { FiHome, FiUser, FiLock, FiPlusCircle, FiCalendar } from "react-icons/fi";
 import { HiOutlineClipboardList } from "react-icons/hi";
 
-// Sidebar Items for User (Exact same style as Admin)
 const sidebarItems = [
-  { key: "Dashboard",       label: "Dashboard",       Icon: FiHome },
-  { key: "Add_Complaint",   label: "Add Complaint",   Icon: FiPlusCircle },
-  { key: "Appointments",    label: "Appointments",    Icon: FiCalendar },
-  { key: "My_Requests",     label: "My Requests",     Icon: HiOutlineClipboardList },
-  { key: "Profile",         label: "Profile",         Icon: FiUser },
+  { key: "Dashboard", label: "Dashboard", Icon: FiHome },
+  { key: "Add_Complaint", label: "Add Complaint", Icon: FiPlusCircle },
+  { key: "Appointments", label: "Appointments", Icon: FiCalendar },
+  { key: "My_Requests", label: "My Requests", Icon: HiOutlineClipboardList },
+  { key: "Profile", label: "Profile", Icon: FiUser },
   { key: "Change_Password", label: "Change Password", Icon: FiLock },
 ];
 
@@ -30,24 +28,29 @@ const UserDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
-  // 🔐 logout
   const handleLogout = () => {
     console.log("Logging out...");
     navigate("/login");
   };
 
-  // ✅ Page renderer mapped to User components
-  const renderPage = () => {
-    switch (activeSection) {
-      case "Dashboard":       return <UserDashboardPage />;
-      case "Add_Complaint":   return <AddComplaint />;
-      case "Appointments":    return <Appointment />;
-      case "My_Requests":     return <MyRequests />;
-      case "Profile":         return <Profile />;
-      case "Change_Password": return <ChangePassword />;
-      default:                return <UserDashboardPage />;
-    }
-  };
+//   const renderPage = () => {
+//     switch (activeSection) {
+//       case "Dashboard":
+//         return <UserDashboardPage />;
+//       case "Add_Complaint":
+//         return <AddComplaint />;
+//       case "Appointments":
+//         return <Appointment />;
+//       case "My_Requests":
+//         return <MyRequests />;
+//       case "Profile":
+//         return <Profile />;
+//       case "Change_Password":
+//         return <ChangePassword />;
+//       default:
+//         return <UserDashboardPage />;
+//     }
+//   };
 
   return (
     <div className="h-screen flex bg-gray-100 overflow-hidden">
@@ -72,7 +75,7 @@ const UserDashboard = () => {
         )}
       </AnimatePresence>
 
-      {/* 🔥 Sidebar (Same as Admin) */}
+      {/* 🔥 Sidebar (Admin eke exact style eka) */}
       <AnimatePresence>
         {(sidebarOpen || window.innerWidth >= 768) && (
           <motion.aside
@@ -107,17 +110,22 @@ const UserDashboard = () => {
                   className="w-11 h-11 rounded-xl items-center justify-center text-xl flex-shrink-0"
                   style={{
                     display: "none",
-                    background: "linear-gradient(135deg,#a78bfa,#6c63ff 60%,#f59e42)",
+                    background:
+                      "linear-gradient(135deg,#a78bfa,#6c63ff 60%,#f59e42)",
                   }}
                 >
                   ⚡
                 </div>
 
                 <div>
-                  <p className="text-white font-bold text-lg leading-tight">Smart GN</p>
+                  <p className="text-white font-bold text-lg leading-tight">
+                    Smart GN
+                  </p>
                   <div className="flex items-center gap-1 mt-0.5">
-                    <User size={14} />
-                    <span className="text-gray-400 text-xs">Citizen</span>
+                    <User />
+                    <span className="text-gray-400 text-xs">
+                      Citizen
+                    </span>
                   </div>
                 </div>
               </div>
@@ -125,8 +133,8 @@ const UserDashboard = () => {
 
             <hr className="border-gray-700 " />
 
-            {/* Menu */}
-            <ul className="space-y-2 mt-4">
+            {/* Menu (Admin eke spacing eka same) */}
+            <ul className="space-y-2">
               {sidebarItems.map((item) => {
                 const Icon = item.Icon;
                 const isActive = activeSection === item.key;
@@ -176,10 +184,8 @@ const UserDashboard = () => {
 
       {/* 🔥 Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* TopBar */}
-        <UserTopBar activeSection={activeSection} />
+        {/* <TopBar activeSection={activeSection} /> */}
 
-        {/* Animated Page Content */}
         <main className="flex-1 overflow-y-auto p-6 md:pt-6 pt-20">
           <AnimatePresence mode="wait">
             <motion.div
@@ -189,7 +195,7 @@ const UserDashboard = () => {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.2 }}
             >
-              {renderPage()}
+              {/* {renderPage()} */}
             </motion.div>
           </AnimatePresence>
         </main>
