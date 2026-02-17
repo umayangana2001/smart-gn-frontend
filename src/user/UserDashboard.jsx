@@ -3,13 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, LogOut, User } from "lucide-react";
 
-// import UserDashboardPage from "./UserDashboardPage.jsx";
-// import AddComplaint from "./AddComplaint.jsx";
-// import Appointment from "./Appointment.jsx";
-// import MyRequests from "./MyRequests.jsx";
-// import Profile from "./Profile.jsx";
-// import ChangePassword from "./ChangePassword.jsx";
-// import TopBar from "./TopBar.jsx";
+import UserDashboardPage from "./UserDashboardPage.jsx";
+
 
 import { FiHome, FiUser, FiLock, FiPlusCircle, FiCalendar } from "react-icons/fi";
 import { HiOutlineClipboardList } from "react-icons/hi";
@@ -33,24 +28,11 @@ const UserDashboard = () => {
     navigate("/login");
   };
 
-//   const renderPage = () => {
-//     switch (activeSection) {
-//       case "Dashboard":
-//         return <UserDashboardPage />;
-//       case "Add_Complaint":
-//         return <AddComplaint />;
-//       case "Appointments":
-//         return <Appointment />;
-//       case "My_Requests":
-//         return <MyRequests />;
-//       case "Profile":
-//         return <Profile />;
-//       case "Change_Password":
-//         return <ChangePassword />;
-//       default:
-//         return <UserDashboardPage />;
-//     }
-//   };
+  const renderPage = () => {
+   
+        return <UserDashboardPage />;
+    }
+ 
 
   return (
     <div className="h-screen flex bg-gray-100 overflow-hidden">
@@ -195,7 +177,7 @@ const UserDashboard = () => {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.2 }}
             >
-              {/* {renderPage()} */}
+              {renderPage()}
             </motion.div>
           </AnimatePresence>
         </main>
