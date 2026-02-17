@@ -18,8 +18,8 @@ import Appointment from "./Appointment.jsx";
 
 const sidebarItems = [
   { key: "Dashboard", label: "Dashboard", Icon: FiHome },
-  { key: "Add_Complaint", label: "Add Complaint", Icon: FiPlusCircle },
   { key: "Appointments", label: "Appointments", Icon: FiCalendar },
+  { key: "Add_Complaint", label: "Add Complaint", Icon: FiPlusCircle },
   { key: "My_Requests", label: "My Requests", Icon: HiOutlineClipboardList },
   { key: "Profile", label: "Profile", Icon: FiUser },
   { key: "Change_Password", label: "Change Password", Icon: FiLock },
@@ -38,13 +38,13 @@ const UserDashboard = () => {
   const renderPage = () => {
     switch (activeSection) {
       case "Profile":
-        return <UserProfile/>;
-      case "My_Requests" :
-        return <MyRequests/>
+        return <UserProfile />;
+      case "My_Requests":
+        return <MyRequests />
       case "Change_Password":
-        return <ChangePassword/>
+        return <ChangePassword />
       case "Appointments":
-       return <Appointment/>
+        return <Appointment />
       default:
         return <UserDashboardPage />;
     }
@@ -140,10 +140,9 @@ const UserDashboard = () => {
                       setSidebarOpen(false);
                     }}
                     className={`relative flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all
-                      ${
-                        isActive
-                          ? "bg-[#2d3452] text-green-400 font-semibold"
-                          : "text-white hover:bg-white/10"
+                      ${isActive
+                        ? "bg-[#2d3452] text-green-400 font-semibold"
+                        : "text-white hover:bg-white/10"
                       }
                     `}
                   >
@@ -174,7 +173,7 @@ const UserDashboard = () => {
       </AnimatePresence>
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <UserTopbar activeSection={activeSection}/>
+        <UserTopbar activeSection={activeSection} />
 
         <main className="flex-1 overflow-y-auto p-6 md:pt-6 pt-20">
           <AnimatePresence mode="wait">

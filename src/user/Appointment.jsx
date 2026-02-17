@@ -18,7 +18,7 @@ const Appointment = () => {
   const [submitted, setSubmitted] = useState(false);
 
   const provinces = [
-    "Central", "Eastern", "North Central", "Northern", 
+    "Central", "Eastern", "North Central", "Northern",
     "North Western", "Sabaragamuwa", "Southern", "Uva", "Western"
   ];
 
@@ -47,14 +47,18 @@ const Appointment = () => {
   const buttonStyle = { background: "linear-gradient(135deg,#7c6ff7,#6c63ff)" };
 
   return (
-    <div className="max-w-4xl mx-auto pb-10">
-      <div className="bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-gray-100">
-        <h2 className="text-gray-900 font-bold text-3xl mb-2">Book an Appointment</h2>
-        <p className="text-gray-500 mb-8">Please provide your details to schedule a meeting.</p>
+    <div className="max-w-5xl mx-auto space-y-6 pb-10">
+  
+        <h1 className="text-2xl font-bold text-gray-800 px-2">Book an Appointment</h1>
+        <p className="text-gray-500 text-sm px-2 -mt-4">Please provide your details to schedule a meeting.</p>
+ 
+
+      <div className="bg-white rounded-2xl p-8 md:p-10 shadow-sm border border-gray-100">
+
 
         {submitted ? (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="bg-green-50 border border-green-200 text-green-700 p-10 rounded-3xl text-center"
           >
@@ -64,7 +68,7 @@ const Appointment = () => {
           </motion.div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
@@ -112,7 +116,7 @@ const Appointment = () => {
                 <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
                   <FiMapPin className="text-purple-500" /> Province
                 </label>
-                <select 
+                <select
                   name="province"
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-purple-500 outline-none"
                   value={formData.province}
