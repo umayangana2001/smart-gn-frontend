@@ -5,7 +5,7 @@ const Profile = () => {
   const [form, setForm] = useState({
     fullName: "Demo User",
     nic:      "199012345678",
-    email:    "sampath-ps20139@stu.kl.ac.lk",
+    email:    "dinushi-ps21193@stu.kl.ac.lk",
     phone:    "0771234567",
     address:  "Colombo, Sri Lanka",
   });
