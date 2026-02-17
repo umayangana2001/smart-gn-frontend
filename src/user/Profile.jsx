@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import { FiUser, FiMail, FiPhone, FiMapPin, FiUpload, FiSave, FiFileText, FiTrash2, FiEye } from "react-icons/fi";
+import { FiUpload, FiSave, FiFileText, FiTrash2, FiEye } from "react-icons/fi";
 
 const Profile = () => {
   const [profile, setProfile] = useState({
     fullName: "Sunil Perera",
     address: "No 12, Temple Road, Colombo",
+    province: "Western",
     district: "Colombo",
     division: "Colombo Central",
     nicNo: "199012345678",
@@ -15,6 +16,11 @@ const Profile = () => {
     email: "sunil.p@example.com",
   });
 
+  const provinces = [
+    "Central", "Eastern", "North Central", "Northern", 
+    "North Western", "Sabaragamuwa", "Southern", "Uva", "Western"
+  ];
+
   const [uploadedDocs, setUploadedDocs] = useState([
     { name: "Birth Certificate.pdf", size: "1.2 MB" },
     { name: "NIC Copy.pdf", size: "850 KB" }
@@ -22,7 +28,25 @@ const Profile = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "contact") {
+      const re = /^[0-9\b]+$/;
+      if (value !== "" && !re.test(value)) return;
+      if (value.length > 10) return;
+    }
+
     setProfile({ ...profile, [name]: value });
+  };
+
+  const handleBirthDateChange = (e) => {
+    const { name, value } = e.target;
+    const re = /^[0-9\b]+$/;
+    if (value !== "" && !re.test(value)) return;
+
+    setProfile({
+      ...profile,
+      birthDate: { ...profile.birthDate, [name]: value }
+    });
   };
 
   const handleFileUpload = (e) => {
@@ -63,7 +87,7 @@ const Profile = () => {
               />
             </div>
 
-            <div className="col-span-1 row-span-1">
+            <div className="col-span-1">
               <label className="block text-sm font-semibold text-gray-700 mb-2">Address</label>
               <textarea
                 name="address"
@@ -75,10 +99,23 @@ const Profile = () => {
             </div>
 
             <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Province</label>
+              <select 
+                name="province"
+                value={profile.province}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 outline-none"
+              >
+                {provinces.map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
+            </div>
+
+            <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">District</label>
               <select 
                 name="district"
                 value={profile.district}
+                onChange={handleInputChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 outline-none"
               >
                 <option value="Colombo">Colombo</option>
@@ -91,6 +128,7 @@ const Profile = () => {
               <select 
                 name="division"
                 value={profile.division}
+                onChange={handleInputChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 outline-none"
               >
                 <option value="Colombo Central">Colombo Central</option>
@@ -113,6 +151,7 @@ const Profile = () => {
               <input
                 type="text"
                 name="contact"
+                placeholder="07XXXXXXXX"
                 value={profile.contact}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none"
@@ -122,13 +161,13 @@ const Profile = () => {
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">Birth Date</label>
               <div className="flex gap-2">
-                <input type="text" placeholder="DD" className="w-full px-2 py-3 text-center rounded-xl border border-gray-200 outline-none" value={profile.birthDate.day} />
-                <input type="text" placeholder="MM" className="w-full px-2 py-3 text-center rounded-xl border border-gray-200 outline-none" value={profile.birthDate.month} />
-                <input type="text" placeholder="YYYY" className="w-full px-4 py-3 text-center rounded-xl border border-gray-200 outline-none" value={profile.birthDate.year} />
+                <input type="text" name="day" placeholder="DD" maxLength="2" className="w-full px-2 py-3 text-center rounded-xl border border-gray-200 outline-none" value={profile.birthDate.day} onChange={handleBirthDateChange} />
+                <input type="text" name="month" placeholder="MM" maxLength="2" className="w-full px-2 py-3 text-center rounded-xl border border-gray-200 outline-none" value={profile.birthDate.month} onChange={handleBirthDateChange} />
+                <input type="text" name="year" placeholder="YYYY" maxLength="4" className="w-full px-4 py-3 text-center rounded-xl border border-gray-200 outline-none" value={profile.birthDate.year} onChange={handleBirthDateChange} />
               </div>
             </div>
 
-            <div>
+            <div className="col-span-1 md:col-span-2">
               <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
               <input
                 type="email"
@@ -191,17 +230,10 @@ const Profile = () => {
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <button 
-                    className="p-2 hover:bg-blue-50 text-blue-500 rounded-lg transition-colors"
-                    title="View Document"
-                  >
+                  <button className="p-2 hover:bg-blue-50 text-blue-500 rounded-lg transition-colors" title="View Document">
                     <FiEye size={18} />
                   </button>
-                  <button 
-                    onClick={() => removeDoc(index)}
-                    className="p-2 hover:bg-red-50 text-red-500 rounded-lg transition-colors"
-                    title="Delete Document"
-                  >
+                  <button onClick={() => removeDoc(index)} className="p-2 hover:bg-red-50 text-red-500 rounded-lg transition-colors" title="Delete Document">
                     <FiTrash2 size={18} />
                   </button>
                 </div>
