@@ -14,6 +14,7 @@ import UserTopbar from "./UserTopbar.jsx";
 import MyRequests from "./MyRequests.jsx";
 import ChangePassword from "../admin/ChangePassword";
 import Appointment from "./Appointment.jsx";
+import AddComplaint from "./AddComplaint.jsx";
 
 
 const sidebarItems = [
@@ -37,14 +38,16 @@ const UserDashboard = () => {
 
   const renderPage = () => {
     switch (activeSection) {
+      case "Appointments":
+        return <Appointment />
+      case  "Add_Complaint":
+        return <AddComplaint/>
       case "Profile":
         return <UserProfile />;
       case "My_Requests":
         return <MyRequests />
       case "Change_Password":
         return <ChangePassword />
-      case "Appointments":
-        return <Appointment />
       default:
         return <UserDashboardPage />;
     }
