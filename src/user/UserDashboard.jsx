@@ -4,15 +4,16 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, LogOut, User } from "lucide-react";
 
-import UserDashboardPage from "./UserDashboardPage.jsx";
-
-
 
 import { FiHome, FiUser, FiLock, FiPlusCircle, FiCalendar } from "react-icons/fi";
 import { HiOutlineClipboardList } from "react-icons/hi";
+
+import UserDashboardPage from "./UserDashboardPage.jsx";
 import UserProfile from './Profile.jsx';
 import UserTopbar from "./UserTopbar.jsx";
 import MyRequests from "./MyRequests.jsx";
+import ChangePassword from "../admin/ChangePassword";
+
 
 const sidebarItems = [
   { key: "Dashboard", label: "Dashboard", Icon: FiHome },
@@ -39,6 +40,8 @@ const UserDashboard = () => {
         return <UserProfile/>;
       case "My_Requests" :
         return <MyRequests/>
+      case "Change_Password":
+        return <ChangePassword/>
       default:
         return <UserDashboardPage />;
     }
