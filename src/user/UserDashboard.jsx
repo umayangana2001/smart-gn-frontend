@@ -11,6 +11,7 @@ import UserDashboardPage from "./UserDashboardPage.jsx";
 import { FiHome, FiUser, FiLock, FiPlusCircle, FiCalendar } from "react-icons/fi";
 import { HiOutlineClipboardList } from "react-icons/hi";
 import UserProfile from './Profile.jsx';
+import UserTopbar from "./UserTopbar.jsx";
 
 const sidebarItems = [
   { key: "Dashboard", label: "Dashboard", Icon: FiHome },
@@ -164,6 +165,7 @@ const UserDashboard = () => {
       </AnimatePresence>
 
       <div className="flex-1 flex flex-col overflow-hidden">
+        <UserTopbar activeSection={activeSection}/>
 
         <main className="flex-1 overflow-y-auto p-6 md:pt-6 pt-20">
           <AnimatePresence mode="wait">

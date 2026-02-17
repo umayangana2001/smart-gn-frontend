@@ -1,38 +1,34 @@
 import React from "react";
 import { FiBell, FiSettings } from "react-icons/fi";
-import { FiGrid, FiUser, FiClipboard, FiLock } from "react-icons/fi";
-import { HiOutlineChartBar } from "react-icons/hi";
+import { FiPlusCircle, FiUser, FiLock , FiCalendar } from "react-icons/fi";
+import { HiOutlineChartBar ,HiOutlineClipboardList} from "react-icons/hi";
 
 
 const pageIcons = {
   "Dashboard":          <HiOutlineChartBar        className="text-2xl text-indigo-500" />,
   "Add_Complaint":      <FiPlusCircle              className="text-2xl text-indigo-500" />,
-  "Reports":            <MdOutlineBarChart         className="text-2xl text-indigo-500" />,
+  "Appointments":            <FiCalendar         className="text-2xl text-indigo-500" />,
+  "My_Requests":            <HiOutlineClipboardList         className="text-2xl text-indigo-500" />,
   "Profile":            <FiUser                   className="text-2xl text-indigo-500" />,
   "Change Password":    <FiLock                   className="text-2xl text-indigo-500" />,
 };
 
-// ── TopBar component 
-const TopBar = ({ activeSection }) => {
+const UserTopbar = ({ activeSection }) => {
   return (
     <div className="bg-white h-16 flex items-center justify-between px-7 border-b border-gray-100 flex-shrink-0 w-full">
 
-      {/* Left — page title with icon */}
       <div className="flex items-center gap-2.5">
         {pageIcons[activeSection]}
         <span className="text-xl font-bold text-gray-900">{activeSection}</span>
       </div>
 
-      {/* Right — bell + user */}
       <div className="flex items-center gap-5">
 
-        {/* Bell notification */}
         <div className="relative cursor-pointer group">
           <FiBell className="text-2xl text-gray-400 group-hover:text-gray-600 transition-colors" />
           <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
         </div>
 
-        {/* User avatar + info */}
         <div className="flex items-center gap-3">
           <div
             className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-base flex-shrink-0"
@@ -54,4 +50,4 @@ const TopBar = ({ activeSection }) => {
   );
 };
 
-export default TopBar;
+export default UserTopbar;
