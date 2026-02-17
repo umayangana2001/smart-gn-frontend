@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import { FiFileText, FiCheckCircle, FiClock, FiTrendingUp, FiArrowRight, FiUser, FiUpload } from "react-icons/fi";
 import { HiOutlineClipboardList } from "react-icons/hi";

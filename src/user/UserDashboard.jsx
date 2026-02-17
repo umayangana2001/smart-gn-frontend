@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, LogOut, User } from "lucide-react";
 
 import UserDashboardPage from "./UserDashboardPage.jsx";
 
 
+
 import { FiHome, FiUser, FiLock, FiPlusCircle, FiCalendar } from "react-icons/fi";
 import { HiOutlineClipboardList } from "react-icons/hi";
+import UserProfile from './Profile.jsx';
 
 const sidebarItems = [
   { key: "Dashboard", label: "Dashboard", Icon: FiHome },
@@ -29,14 +32,16 @@ const UserDashboard = () => {
   };
 
   const renderPage = () => {
-   
+    switch (activeSection) {
+      case "Profile":
+        return <UserProfile/>;
+      default:
         return <UserDashboardPage />;
     }
- 
+  };
 
   return (
     <div className="h-screen flex bg-gray-100 overflow-hidden">
-      {/* 🔥 Mobile Header */}
       <div className="md:hidden fixed left-0 right-0 z-40 bg-white shadow flex items-center justify-between px-4 py-3">
         <button onClick={() => setSidebarOpen(true)}>
           <Menu className="w-6 h-6" />
@@ -44,7 +49,6 @@ const UserDashboard = () => {
         <h2 className="font-semibold">User Panel</h2>
       </div>
 
-      {/* 🔥 Mobile Overlay */}
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
@@ -57,7 +61,6 @@ const UserDashboard = () => {
         )}
       </AnimatePresence>
 
-      {/* 🔥 Sidebar (Admin eke exact style eka) */}
       <AnimatePresence>
         {(sidebarOpen || window.innerWidth >= 768) && (
           <motion.aside
@@ -67,7 +70,6 @@ const UserDashboard = () => {
             transition={{ type: "spring", stiffness: 260, damping: 25 }}
             className="fixed md:relative z-50 w-72 min-h-full bg-[#1a1f36] text-white shadow-xl p-6"
           >
-            {/* Mobile close row */}
             <div className="flex justify-between items-center px-6 pt-6 mb-2 md:hidden">
               <h1 className="text-xl font-bold text-white">User Panel</h1>
               <button onClick={() => setSidebarOpen(false)}>
@@ -75,7 +77,6 @@ const UserDashboard = () => {
               </button>
             </div>
 
-            {/* Logo / brand */}
             <div className="px-5 py-6 border-b border-white/10">
               <div className="flex items-center gap-3">
                 <img
@@ -115,7 +116,6 @@ const UserDashboard = () => {
 
             <hr className="border-gray-700 " />
 
-            {/* Menu (Admin eke spacing eka same) */}
             <ul className="space-y-2">
               {sidebarItems.map((item) => {
                 const Icon = item.Icon;
@@ -150,7 +150,6 @@ const UserDashboard = () => {
                 );
               })}
 
-              {/* Logout */}
               <motion.li
                 whileHover={{ scale: 1.03 }}
                 onClick={handleLogout}
@@ -164,9 +163,7 @@ const UserDashboard = () => {
         )}
       </AnimatePresence>
 
-      {/* 🔥 Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* <TopBar activeSection={activeSection} /> */}
 
         <main className="flex-1 overflow-y-auto p-6 md:pt-6 pt-20">
           <AnimatePresence mode="wait">
