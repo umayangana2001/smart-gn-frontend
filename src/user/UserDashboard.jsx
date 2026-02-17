@@ -12,6 +12,7 @@ import { FiHome, FiUser, FiLock, FiPlusCircle, FiCalendar } from "react-icons/fi
 import { HiOutlineClipboardList } from "react-icons/hi";
 import UserProfile from './Profile.jsx';
 import UserTopbar from "./UserTopbar.jsx";
+import MyRequests from "./MyRequests.jsx";
 
 const sidebarItems = [
   { key: "Dashboard", label: "Dashboard", Icon: FiHome },
@@ -36,6 +37,8 @@ const UserDashboard = () => {
     switch (activeSection) {
       case "Profile":
         return <UserProfile/>;
+      case "My_Requests" :
+        return <MyRequests/>
       default:
         return <UserDashboardPage />;
     }
