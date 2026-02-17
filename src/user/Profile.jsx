@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import { FiUpload, FiSave, FiFileText, FiTrash2, FiEye } from "react-icons/fi";
+import { FiUpload, FiSave, FiFileText, FiTrash2, FiEye, FiCalendar, FiUser, FiMapPin, FiPhone ,FiMail  } from "react-icons/fi";
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -66,7 +66,7 @@ const Profile = () => {
     alert("Profile details saved successfully!");
   };
 
-  return (
+ return (
     <div className="max-w-5xl mx-auto space-y-6 pb-10">
       <h1 className="text-2xl font-bold text-gray-800 px-2">My Info</h1>
       <p className="text-gray-500 text-sm px-2 -mt-4">Manage your personal information and documents</p>
@@ -77,7 +77,9 @@ const Profile = () => {
         <form onSubmit={handleSave} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="col-span-1">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <FiUser className="text-purple-500" /> Full Name
+              </label>
               <input
                 type="text"
                 name="fullName"
@@ -88,7 +90,9 @@ const Profile = () => {
             </div>
 
             <div className="col-span-1">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Address</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <FiMapPin className="text-purple-500" /> Address
+              </label>
               <textarea
                 name="address"
                 rows="1"
@@ -99,7 +103,9 @@ const Profile = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Province</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <FiMapPin className="text-purple-500" /> Province
+              </label>
               <select 
                 name="province"
                 value={profile.province}
@@ -111,7 +117,9 @@ const Profile = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">District</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <FiMapPin className="text-purple-500" /> District
+              </label>
               <select 
                 name="district"
                 value={profile.district}
@@ -124,7 +132,9 @@ const Profile = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Division</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <FiMapPin className="text-purple-500" /> Division
+              </label>
               <select 
                 name="division"
                 value={profile.division}
@@ -136,7 +146,9 @@ const Profile = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">NIC No</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <FiFileText className="text-purple-500" /> NIC No
+              </label>
               <input
                 type="text"
                 name="nicNo"
@@ -147,7 +159,9 @@ const Profile = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Contact</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <FiPhone className="text-purple-500" /> Contact
+              </label>
               <input
                 type="text"
                 name="contact"
@@ -159,7 +173,9 @@ const Profile = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Birth Date</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <FiCalendar className="text-purple-500" /> Birth Date
+              </label>
               <div className="flex gap-2">
                 <input type="text" name="day" placeholder="DD" maxLength="2" className="w-full px-2 py-3 text-center rounded-xl border border-gray-200 outline-none" value={profile.birthDate.day} onChange={handleBirthDateChange} />
                 <input type="text" name="month" placeholder="MM" maxLength="2" className="w-full px-2 py-3 text-center rounded-xl border border-gray-200 outline-none" value={profile.birthDate.month} onChange={handleBirthDateChange} />
@@ -168,7 +184,9 @@ const Profile = () => {
             </div>
 
             <div className="col-span-1 md:col-span-2">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <FiMail className="text-purple-500" /> Email
+              </label>
               <input
                 type="email"
                 name="email"
