@@ -20,8 +20,8 @@ import AddComplaint from "./AddComplaint.jsx";
 const sidebarItems = [
   { key: "Dashboard", label: "Dashboard", Icon: FiHome },
   { key: "Appointments", label: "Appointments", Icon: FiCalendar },
-  { key: "Add_Complaint", label: "Add Complaint", Icon: FiPlusCircle },
   { key: "My_Requests", label: "My Requests", Icon: HiOutlineClipboardList },
+  { key: "Add_Complaint", label: "Add Complaint", Icon: FiPlusCircle },
   { key: "Profile", label: "Profile", Icon: FiUser },
   { key: "Change_Password", label: "Change Password", Icon: FiLock },
 ];
@@ -40,8 +40,8 @@ const UserDashboard = () => {
     switch (activeSection) {
       case "Appointments":
         return <Appointment />
-      case  "Add_Complaint":
-        return <AddComplaint/>
+      case "Add_Complaint":
+        return <AddComplaint />
       case "Profile":
         return <UserProfile />;
       case "My_Requests":
