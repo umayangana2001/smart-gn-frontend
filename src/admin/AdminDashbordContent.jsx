@@ -1,7 +1,7 @@
 import React from "react";
 
 const officers = [
-  { id: "VO001", name: "Kamal Perera",      division: "Colombo North", email: "kamal@gn.gov.lk",  active: true },
+  { id: "VO001", name: "Kamal dias",      division: "Colombo North", email: "kamal@gn.gov.lk",  active: true },
   { id: "VO002", name: "Nimal Silva",       division: "Colombo South", email: "nimal@gn.gov.lk",  active: true },
 ];
 
@@ -32,7 +32,7 @@ const OfficersIco = () => (
 
 const stats = [
   { label: "Total Complaints", value: 156, icon: <ComplaintIco />, bg: "#ff6b35" },
-  { label: "Pending Requests", value: 42,  icon: <PendingIco />,   bg: "#f5a623" },
+  { label: "Pending Requests", value: 47,  icon: <PendingIco />,   bg: "#f5a623" },
   { label: "Completed",        value: 234, icon: <CheckIco />,     bg: "#4caf50" },
   { label: "Active Officers",  value: 12,  icon: <OfficersIco />,  bg: "#42a5f5" },
 ];
