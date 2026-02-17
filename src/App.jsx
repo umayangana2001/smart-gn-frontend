@@ -10,6 +10,8 @@ import About from "./pages/public/About";
 import Services from "./pages/public/Services";
 import AdminDashboard from "./admin/AdminDashboard";
 import VODashboard from "./villageOfficer/VODashboard";
+import UserDashboard from "./user/UserDashboard";
+
 
 function App() {
   const location = useLocation();
@@ -30,6 +32,9 @@ function App() {
 
         {/* Village Officer Dashboard */}
         <Route path="/village-officer" element={<VODashboard />} />
+        
+         {/* Citizen Dashboard */}
+        <Route path="/citizen" element={<UserDashboard />} />
 
         {/* Public Layout */}
         <Route element={<PublicLayout />}>
