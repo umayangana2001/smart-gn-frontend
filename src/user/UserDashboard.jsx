@@ -13,6 +13,7 @@ import UserProfile from './Profile.jsx';
 import UserTopbar from "./UserTopbar.jsx";
 import MyRequests from "./MyRequests.jsx";
 import ChangePassword from "../admin/ChangePassword";
+import Appointment from "./Appointment.jsx";
 
 
 const sidebarItems = [
@@ -42,6 +43,8 @@ const UserDashboard = () => {
         return <MyRequests/>
       case "Change_Password":
         return <ChangePassword/>
+      case "Appointments":
+       return <Appointment/>
       default:
         return <UserDashboardPage />;
     }
