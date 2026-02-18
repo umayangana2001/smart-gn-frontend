@@ -16,6 +16,7 @@ const sidebarItems = [
   { key: "Create_Officer", label: "Create Officer", Icon: FiUser },
   { key: "Manage_Complaints", label: "Manage Complaints", Icon: FiClipboard },
   { key: "Change_Password", label: "Change Password", Icon: FiLock },
+  { key: "All_Users", label: "All Users", Icon: FiUser },
 ];
 
 const AdminDashboard = () => {
