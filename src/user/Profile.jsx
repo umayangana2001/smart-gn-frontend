@@ -5,15 +5,15 @@ import { FiUpload, FiSave, FiFileText, FiTrash2, FiEye, FiCalendar, FiUser, FiMa
 
 const Profile = () => {
   const [profile, setProfile] = useState({
-    fullName: "Sunil Perera",
-    address: "No 12, Temple Road, Colombo",
-    province: "Western",
-    district: "Colombo",
-    division: "Colombo Central",
-    nicNo: "199012345678",
-    contact: "0712345678",
-    birthDate: { day: "01", month: "01", year: "1990" },
-    email: "sunil.p@example.com",
+    fullName: "",
+    address: "",
+    province: "",
+    district: "",
+    division: "",
+    nicNo: "",
+    contact: "",
+    birthDate: { day: "", month: "", year: "" },
+    email: "",
   });
 
   const provinces = [
@@ -22,8 +22,8 @@ const Profile = () => {
   ];
 
   const [uploadedDocs, setUploadedDocs] = useState([
-    { name: "Birth Certificate.pdf", size: "1.2 MB" },
-    { name: "NIC Copy.pdf", size: "850 KB" }
+    { name: "", size: "" },
+    { name: "", size: "" }
   ]);
 
   const handleInputChange = (e) => {
