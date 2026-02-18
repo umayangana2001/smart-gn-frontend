@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
-import logo from "../../assets/logo/smart-gn-logo.png";
-import { ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { registerUser } from "../../services/authService";
+import { toast } from "react-hot-toast"; // ✅ import toast
+import logo from "../../assets/logo/smart-gn-logo.png";
 
 function Register() {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     fullName: "",
     nic: "",
@@ -17,23 +16,19 @@ function Register() {
     password: "",
     confirmPassword: "",
   });
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!"); // ✅ toast error
       return;
     }
 
@@ -50,7 +45,7 @@ function Register() {
 
       await registerUser(payload);
 
-      alert("Registration successful!");
+      toast.success("Registration successful!"); // ✅ toast success
 
       // Reset form
       setFormData({
@@ -63,14 +58,10 @@ function Register() {
       });
 
       navigate("/login");
-
     } catch (error) {
       console.error("Register Error:", error);
-
-      const message =
-        error.response?.data?.message || "Registration failed";
-
-      alert(message);
+      const message = error.response?.data?.message || "Registration failed";
+      toast.error(message); // ✅ toast error
     } finally {
       setLoading(false);
     }
@@ -85,11 +76,10 @@ function Register() {
       transition={{ duration: 0.4 }}
     >
       {/* Back Button */}
-      <Link 
-  to="/home"
-  className="absolute top-6 left-6 z-50 flex items-center gap-2 text-primary font-medium hover:underline"
->
-
+      <Link
+        to="/home"
+        className="absolute top-6 left-6 z-50 flex items-center gap-2 text-primary font-medium hover:underline"
+      >
         <ArrowLeft size={20} />
         Back
       </Link>
@@ -191,9 +181,7 @@ function Register() {
             />
             <button
               type="button"
-              onClick={() =>
-                setShowConfirmPassword(!showConfirmPassword)
-              }
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-3 top-3 text-gray-500"
             >
               {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -208,7 +196,6 @@ function Register() {
           >
             {loading ? "Registering..." : "Register"}
           </button>
-
         </form>
 
         <div className="my-6 border-t"></div>
