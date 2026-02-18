@@ -2,7 +2,7 @@ import React from "react";
 
 const officers = [
   { id: "VO001", name: "Kamal dias",      division: "Colombo North", email: "kamal@gn.gov.lk",  active: true },
-  { id: "VO002", name: "Nimal Silva",       division: "Colombo South", email: "nimal@gn.gov.lk",  active: true },
+  { id: "VO002", name: "Nimal Silva",       division: "Vavuniya North", email: "nimal@gn.gov.lk",  active: true },
 ];
 
 // ── Stat card icons ─────────────────────────────────────────────
