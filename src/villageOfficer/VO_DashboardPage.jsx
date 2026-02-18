@@ -7,7 +7,7 @@ import { FaSpinner } from "react-icons/fa";
 const recentRequests = [
   { id: "DR001", citizen: "Sunil Fernando",    type: "Birth Certificate",     date: "2024-01-15", status: "PENDING"     },
   { id: "DR002", citizen: "Malini Jayawardena", type: "Character Certificate", date: "2024-01-14", status: "IN_PROGRESS" },
-  { id: "DR003", citizen: "Ajith perera",       type: "Income Certificate",    date: "2024-01-10", status: "COMPLETED"   },
+  { id: "DR003", citizen: "Ajith perera",       type: "Income Certificate",    date: "2024-01-11", status: "COMPLETED"   },
 ];
 
 const statusBadge = (status) => {
