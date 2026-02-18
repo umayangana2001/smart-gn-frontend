@@ -11,7 +11,7 @@ import Services from "./pages/public/Services";
 import AdminDashboard from "./admin/AdminDashboard";
 import VODashboard from "./villageOfficer/VODashboard";
 import UserDashboard from "./user/UserDashboard";
-
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const location = useLocation();
@@ -27,14 +27,35 @@ function App() {
         {/* Opening Screen */}
         <Route path="/" element={<OpeningScreen />} />
 
-        {/* Admin Dashboard */}
-        <Route path="/admin" element={<AdminDashboard />} />
+        {/* Admin Dashboard (Protected) */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Village Officer Dashboard */}
-        <Route path="/village-officer" element={<VODashboard />} />
-        
-         {/* Citizen Dashboard */}
-        <Route path="/citizen" element={<UserDashboard />} />
+        {/* Village Officer Dashboard (Protected) */}
+        <Route
+          path="/village-officer"
+          element={
+            <ProtectedRoute>
+              <VODashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Citizen Dashboard (Protected) */}
+        <Route
+          path="/citizen"
+          element={
+            <ProtectedRoute>
+              <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Public Layout */}
         <Route element={<PublicLayout />}>

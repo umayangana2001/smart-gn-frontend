@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import logo from "../../assets/logo/smart-gn-logo.png";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
+import { loginUser } from "../../services/authService";
 
 function Login() {
   const navigate = useNavigate();
@@ -12,19 +13,37 @@ function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const fakeRole = "citizen";
+  try {
+    const data = await loginUser(email, password);
 
-    if (fakeRole === "admin") {
-      navigate("/admin/dashboard");
-    } else if (fakeRole === "gn") {
-      navigate("/gn/dashboard");
-    } else {
-      navigate("/home");
+    // Save token
+    localStorage.setItem("token", data.access_token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+
+    const role = data.user.role;
+
+    // Redirect based on role
+    if (role === "SUPER_ADMIN" || role === "ADMIN") {
+      navigate("/admin");
+    } else if (role === "VILLAGE_OFFICER") {
+      navigate("/village-officer");
+    } else if (role === "USER") {
+  navigate("/citizen");
+}
+ else {
+      navigate("/");
     }
-  };
+
+  } catch (error) {
+    alert("Invalid email or password");
+    console.error(error);
+  }
+};
+
 
   return (
     <motion.div
@@ -38,8 +57,9 @@ function Login() {
 {/* Back Button */}
 <Link 
   to="/home"
-  className="absolute top-6 left-6 flex items-center gap-2 text-primary font-medium hover:underline"
+  className="absolute top-6 left-6 z-50 flex items-center gap-2 text-primary font-medium hover:underline"
 >
+
   <ArrowLeft size={20} />
   Back
 </Link>
