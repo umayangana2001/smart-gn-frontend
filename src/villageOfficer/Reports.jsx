@@ -1,31 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FiFileText, FiCalendar, FiClock } from "react-icons/fi";
-import { HiOutlineChartBar } from "react-icons/hi";
 import { MdOutlineBarChart } from "react-icons/md";
+import { getAllRequests } from "../services/VillageOfficerService";
 
-// ── Static data ─────────────────────────────────────────────────
-const reportStats = [
-  { label: "Total Requests", value: "156",    bg: "#42a5f5", icon: <FiFileText  className="text-white text-xl" /> },
-  { label: "This Month",     value: "42",     bg: "#4caf50", icon: <FiCalendar  className="text-white text-xl" /> },
-  { label: "Completion Rate",value: "87%",    bg: "#ab47bc", icon: <MdOutlineBarChart className="text-white text-xl" /> },
-  { label: "Avg. Time",      value: "3 days", bg: "#f5a623", icon: <FiClock     className="text-white text-xl" /> },
-];
-
-const requestsByType = [
-  { label: "Character Certificate", count: 45, color: "#7c3aed", pct: 100 },
-  { label: "Income Certificate",    count: 38, color: "#ec4899", pct: 84  },
-  { label: "Address Verification",  count: 32, color: "#f59e0b", pct: 71  },
-  { label: "Birth Certificate",     count: 25, color: "#10b981", pct: 56  },
-  { label: "Other",                 count: 16, color: "#9ca3af", pct: 36  },
-];
-
-const statusDist = [
-  { label: "Completed",   pct: 60, color: "#7c3aed" },
-  { label: "In Progress", pct: 25, color: "#ec4899" },
-  { label: "Pending",     pct: 15, color: "#f59e0b" },
-];
-
-// ── Donut SVG ───────────────────────────────────────────────────
 const DonutChart = ({ data, total }) => {
   const r = 70;
   const cx = 90;
@@ -54,14 +31,81 @@ const DonutChart = ({ data, total }) => {
           style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%" }}
         />
       ))}
-      {/* Centre text */}
-      <text x={cx} y={cy - 6}  textAnchor="middle" fontSize="26" fontWeight="800" fill="#7c3aed">{total}</text>
+      <text x={cx} y={cy - 6} textAnchor="middle" fontSize="26" fontWeight="800" fill="#7c3aed">{total}</text>
       <text x={cx} y={cy + 14} textAnchor="middle" fontSize="10" fill="#9ca3af">Total Requests</text>
     </svg>
   );
 };
 
 const Reports = () => {
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  const fetchRequests = async () => {
+    try {
+      const data = await getAllRequests();
+      setRequests(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
+
+  // ─── Compute stats ───
+  const totalRequests = requests.length;
+  const thisMonthRequests = requests.filter(r => {
+    const created = new Date(r.createdAt);
+    const now = new Date();
+    return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear();
+  }).length;
+  const completedCount = requests.filter(r => r.status === "COMPLETED").length;
+  const avgTime = requests.length
+    ? Math.round(
+        requests.reduce((sum, r) => {
+          const created = new Date(r.createdAt);
+          const updated = new Date(r.updatedAt || r.createdAt);
+          return sum + (updated - created) / (1000 * 60 * 60 * 24);
+        }, 0) / requests.length
+      ) + " days"
+    : "0 days";
+
+  const reportStats = [
+    { label: "Total Requests", value: totalRequests, bg: "#42a5f5", icon: <FiFileText className="text-white text-xl" /> },
+    { label: "This Month", value: thisMonthRequests, bg: "#4caf50", icon: <FiCalendar className="text-white text-xl" /> },
+    { label: "Completion Rate", value: totalRequests ? `${Math.round((completedCount / totalRequests) * 100)}%` : "0%", bg: "#ab47bc", icon: <MdOutlineBarChart className="text-white text-xl" /> },
+    { label: "Avg. Time", value: avgTime, bg: "#f5a623", icon: <FiClock className="text-white text-xl" /> },
+  ];
+
+  // Requests by type
+  const typeMap = {};
+  requests.forEach(r => {
+    const type = r.serviceType?.name || "Other";
+    typeMap[type] = (typeMap[type] || 0) + 1;
+  });
+  const maxCount = Math.max(...Object.values(typeMap), 1);
+  const requestsByType = Object.keys(typeMap).map((k) => ({
+    label: k,
+    count: typeMap[k],
+    color: "#7c3aed",
+    pct: Math.round((typeMap[k] / maxCount) * 100),
+  }));
+
+  // Status distribution
+  const statusCounts = { COMPLETED: 0, IN_PROGRESS: 0, PENDING: 0 };
+  requests.forEach(r => { statusCounts[r.status] = (statusCounts[r.status] || 0) + 1 });
+  const statusDist = Object.keys(statusCounts).map(s => ({
+    label: s.charAt(0) + s.slice(1).toLowerCase(),
+    pct: totalRequests ? Math.round((statusCounts[s] / totalRequests) * 100) : 0,
+    color: s === "COMPLETED" ? "#7c3aed" : s === "IN_PROGRESS" ? "#ec4899" : "#f59e0b"
+  }));
+
   return (
     <div>
       {/* ── Stat Cards ── */}
@@ -112,10 +156,8 @@ const Reports = () => {
             <span className="text-xl">📝</span>
             <h2 className="text-base font-bold text-gray-900">Status Distribution</h2>
           </div>
-
-          {/* Donut + legend */}
           <div className="flex flex-col items-center gap-6">
-            <DonutChart data={statusDist} total={156} />
+            <DonutChart data={statusDist} total={totalRequests} />
             <div className="space-y-2 w-full max-w-xs">
               {statusDist.map((s, i) => (
                 <div key={i} className="flex items-center gap-3">
@@ -134,5 +176,3 @@ const Reports = () => {
 };
 
 export default Reports;
-
- 
