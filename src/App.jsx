@@ -12,12 +12,14 @@ import AdminDashboard from "./admin/AdminDashboard";
 import VODashboard from "./villageOfficer/VODashboard";
 import UserDashboard from "./user/UserDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const location = useLocation();
 
   return (
     <AnimatePresence mode="wait">
+      <Toaster position="top-right" reverseOrder={false} />
       <Routes location={location} key={location.pathname}>
 
         {/* Auth Pages */}
