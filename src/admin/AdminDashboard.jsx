@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, LogOut, User } from "lucide-react";
+import ServiceTypes from "./ServiceTypes.jsx";
+
 
 import AdminDashboardContent from "./AdminDashbordContent.jsx";
 import CreateVillageOfficer from "./CreateVillageOfficer.jsx";
@@ -17,6 +19,7 @@ const sidebarItems = [
   { key: "Manage_Complaints", label: "Manage Complaints", Icon: FiClipboard },
   { key: "Change_Password", label: "Change Password", Icon: FiLock },
   { key: "All_Users", label: "All Users", Icon: FiUser },
+   { key: "Service_Types", label: "Service Types", Icon: FiClipboard },
 ];
 
 const AdminDashboard = () => {
@@ -41,6 +44,8 @@ const AdminDashboard = () => {
         return <ManageComplaints />;
       case "Change_Password":
         return <ChangePassword />;
+        case "Service_Types":
+      return <ServiceTypes />;
       default:
         return <AdminDashboardContent />;
     }

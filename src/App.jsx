@@ -13,7 +13,8 @@ import VODashboard from "./villageOfficer/VODashboard";
 import UserDashboard from "./user/UserDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
-import ServiceTypes from "./pages/admin/ServiceTypes";
+import ServiceTypes from "./admin/ServiceTypes";
+
 function App() {
   const location = useLocation();
 
