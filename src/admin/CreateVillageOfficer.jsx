@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { createGN } from "../services/adminService";
 import {
-  getProvinces,
-  getDistricts,
-  getDivisions,
+  getAllProvinces,
+  getDistrictsByProvince,
+  getDivisionsByDistrict,
 } from "../services/locationService";
+
 
 const CreateVillageOfficer = () => {
   const [form, setForm] = useState({
@@ -35,7 +36,7 @@ const CreateVillageOfficer = () => {
 
   const fetchProvinces = async () => {
     try {
-      const data = await getProvinces();
+      const data = await getAllProvinces();
       setProvinces(data);
     } catch {
       toast.error("Failed to load provinces");
@@ -44,7 +45,7 @@ const CreateVillageOfficer = () => {
 
   const fetchDistricts = async (provinceId) => {
     try {
-      const data = await getDistricts(provinceId);
+      const data = await getDistrictsByProvince(provinceId);
       setDistricts(data);
       setDivisions([]);
     } catch {
@@ -54,7 +55,7 @@ const CreateVillageOfficer = () => {
 
   const fetchDivisions = async (districtId) => {
     try {
-      const data = await getDivisions(districtId);
+      const data = await getDivisionsByDistrict(districtId);
       setDivisions(data);
     } catch {
       toast.error("Failed to load divisions");

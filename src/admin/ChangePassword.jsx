@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { getUserProfile } from "../services/authService";
-import API from "../services/api";
+import api from "../services/api";
 
-
-// ─── Refresh Icon ───
+// ─────────────────────────────────────────────
+// Refresh Icon
+// ─────────────────────────────────────────────
 const RefreshIco = () => (
   <svg
     width="18"
@@ -22,7 +23,9 @@ const RefreshIco = () => (
   </svg>
 );
 
-// ─── Eye Icon (show/hide) ───
+// ─────────────────────────────────────────────
+// Eye Icon
+// ─────────────────────────────────────────────
 const EyeIcon = ({ show }) => (
   <svg
     width="20"
@@ -33,11 +36,7 @@ const EyeIcon = ({ show }) => (
     strokeWidth={2}
   >
     {show ? (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-      />
+      <circle cx="12" cy="12" r="3" />
     ) : (
       <path
         strokeLinecap="round"
@@ -48,6 +47,41 @@ const EyeIcon = ({ show }) => (
   </svg>
 );
 
+// ─────────────────────────────────────────────
+// Input Field (Moved OUTSIDE to prevent re-mounting)
+// ─────────────────────────────────────────────
+const Field = ({
+  label,
+  fieldKey,
+  form,
+  showPassword,
+  handleChange,
+  toggleShowPassword,
+}) => (
+  <div className="flex flex-col gap-1.5 mb-5 relative">
+    <label className="text-sm font-semibold text-gray-700">{label}</label>
+    <div className="relative">
+      <input
+        type={showPassword[fieldKey] ? "text" : "password"}
+        value={form[fieldKey]}
+        onChange={(e) => handleChange(fieldKey, e.target.value)}
+        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm
+                   outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all pr-10"
+      />
+      <button
+        type="button"
+        onClick={() => toggleShowPassword(fieldKey)}
+        className="absolute right-3 top-1/2 -translate-y-1/2"
+      >
+        <EyeIcon show={showPassword[fieldKey]} />
+      </button>
+    </div>
+  </div>
+);
+
+// ─────────────────────────────────────────────
+// Main Component
+// ─────────────────────────────────────────────
 const ChangePassword = () => {
   const [form, setForm] = useState({
     current: "",
@@ -67,7 +101,7 @@ const ChangePassword = () => {
     avatar: null,
   });
 
-  // ─── Fetch user profile ───
+  // Fetch user profile
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -86,7 +120,7 @@ const ChangePassword = () => {
     fetchUser();
   }, []);
 
-  // ─── Form change ───
+  // Handle input change
   const handleChange = (key, value) => {
     setForm((prev) => ({
       ...prev,
@@ -94,7 +128,7 @@ const ChangePassword = () => {
     }));
   };
 
-  // ─── Toggle show/hide ───
+  // Toggle show/hide
   const toggleShowPassword = (key) => {
     setShowPassword((prev) => ({
       ...prev,
@@ -102,17 +136,20 @@ const ChangePassword = () => {
     }));
   };
 
-  // ─── Submit password ───
+  // Submit password
   const handleSubmit = async () => {
     const { current, newPw, confirm } = form;
+
     if (!current || !newPw || !confirm) {
       toast.error("Please fill in all fields.");
       return;
     }
+
     if (newPw !== confirm) {
       toast.error("New passwords do not match.");
       return;
     }
+
     if (newPw.length < 6) {
       toast.error("Password must be at least 6 characters.");
       return;
@@ -120,49 +157,30 @@ const ChangePassword = () => {
 
     try {
       setLoading(true);
+
       const res = await api.patch("/auth/user/change-password", {
         currentPassword: current,
         newPassword: newPw,
       });
+
       toast.success(res.data?.message || "Password updated successfully!");
       setForm({ current: "", newPw: "", confirm: "" });
     } catch (err) {
       console.error(err);
-      const msg = err.response?.data?.message || "Failed to update password.";
+      const msg =
+        err.response?.data?.message || "Failed to update password.";
       toast.error(msg);
     } finally {
       setLoading(false);
     }
   };
 
-  // ─── Input Field ───
-  const Field = ({ label, fieldKey }) => (
-    <div className="flex flex-col gap-1.5 mb-5 relative">
-      <label className="text-sm font-semibold text-gray-700">{label}</label>
-      <div className="relative">
-        <input
-          type={showPassword[fieldKey] ? "text" : "password"}
-          value={form[fieldKey]}
-          onChange={(e) => handleChange(fieldKey, e.target.value)}
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm
-                     outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all pr-10"
-        />
-        <button
-          type="button"
-          onClick={() => toggleShowPassword(fieldKey)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 focus:outline-none z-10"
-        >
-          <EyeIcon show={showPassword[fieldKey]} />
-        </button>
-      </div>
-    </div>
-  );
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
       <Toaster position="top-right" />
+
       <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 w-full max-w-md">
-        {/* User avatar */}
+        {/* User Section */}
         <div className="text-center mb-6">
           <div
             className="mx-auto mb-4 rounded-full bg-purple-100 flex items-center justify-center overflow-hidden"
@@ -175,19 +193,48 @@ const ChangePassword = () => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <span className="text-4xl">{user.fullName?.charAt(0)}</span>
+              <span className="text-4xl">
+                {user.fullName?.charAt(0)}
+              </span>
             )}
           </div>
-          <h2 className="text-xl font-bold text-gray-900">{user.fullName}</h2>
-          <p className="text-gray-400 text-sm mt-1">Update your account security</p>
+          <h2 className="text-xl font-bold text-gray-900">
+            {user.fullName}
+          </h2>
+          <p className="text-gray-400 text-sm mt-1">
+            Update your account security
+          </p>
         </div>
 
-        {/* Form Fields */}
-        <Field label="Current Password" fieldKey="current" />
-        <Field label="New Password" fieldKey="newPw" />
-        <Field label="Confirm New Password" fieldKey="confirm" />
+        {/* Password Fields */}
+        <Field
+          label="Current Password"
+          fieldKey="current"
+          form={form}
+          showPassword={showPassword}
+          handleChange={handleChange}
+          toggleShowPassword={toggleShowPassword}
+        />
 
-        {/* Submit Button */}
+        <Field
+          label="New Password"
+          fieldKey="newPw"
+          form={form}
+          showPassword={showPassword}
+          handleChange={handleChange}
+          toggleShowPassword={toggleShowPassword}
+        />
+
+        <Field
+          label="Confirm New Password"
+          fieldKey="confirm"
+          form={form}
+          showPassword={showPassword}
+          handleChange={handleChange}
+          toggleShowPassword={toggleShowPassword}
+        />
+
+        {/* Submit */}
         <button
           type="button"
           onClick={handleSubmit}
