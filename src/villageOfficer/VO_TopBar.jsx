@@ -4,6 +4,7 @@ import { HiOutlineViewGrid }  from "react-icons/hi";
 import { HiOutlineClipboardList } from "react-icons/hi";
 import { MdOutlineBarChart }   from "react-icons/md";
 import { FiUser, FiLock }     from "react-icons/fi";
+import NotificationBell from "../components/NotificationBell";
 
 // ── Page header icon per section ────────────────────────────────
 const pageIcons = {
@@ -28,10 +29,7 @@ const VO_TopBar = ({ activeSection }) => {
       <div className="flex items-center gap-5">
 
         {/* Bell */}
-        <div className="relative cursor-pointer group">
-          <FiBell className="text-2xl text-gray-400 group-hover:text-gray-600 transition-colors" />
-          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
-        </div>
+        <NotificationBell />
 
         {/* User */}
         <div className="flex items-center gap-3">

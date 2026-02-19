@@ -19,19 +19,30 @@ export const deactivateGN = async (id) => {
 };
 
 // ➕ Create GN
-export const createGN = async (form) => {
+// ➕ Create GN
+export const createGN = async (form, districts, divisions) => {
+  const selectedDistrict = districts.find(
+    (d) => d.id === form.districtId
+  );
+
+  const selectedDivision = divisions.find(
+    (d) => d.id === form.divisionId
+  );
+
+  // 🔥 SEND ONLY WHAT BACKEND ALLOWS
   const payload = {
     email: form.email,
     password: form.password,
     fullName: form.fullName,
-    division: form.division,
-    // optional
-    district: "Colombo", // you can make dynamic later
+    district: selectedDistrict?.name || "",
+    division: selectedDivision?.name || "",
   };
 
   const res = await api.post("/admin/create-gn", payload);
   return res.data;
 };
+
+
 
 // 📥 complaints
 export const getAllComplaints = async () => {

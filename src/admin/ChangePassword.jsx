@@ -6,7 +6,14 @@ import API from "../services/api";
 
 // ─── Refresh Icon ───
 const RefreshIco = () => (
-  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2.5}>
+  <svg
+    width="18"
+    height="18"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="white"
+    strokeWidth={2.5}
+  >
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -15,19 +22,63 @@ const RefreshIco = () => (
   </svg>
 );
 
-const ChangePassword = () => {
-  const [form, setForm] = useState({ current: "", newPw: "", confirm: "" });
-  const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState({ fullName: "Loading...", avatar: null });
+// ─── Eye Icon (show/hide) ───
+const EyeIcon = ({ show }) => (
+  <svg
+    width="20"
+    height="20"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="gray"
+    strokeWidth={2}
+  >
+    {show ? (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+      />
+    ) : (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+      />
+    )}
+  </svg>
+);
 
-  // ─── Fetch current user profile ───
+const ChangePassword = () => {
+  const [form, setForm] = useState({
+    current: "",
+    newPw: "",
+    confirm: "",
+  });
+
+  const [showPassword, setShowPassword] = useState({
+    current: false,
+    newPw: false,
+    confirm: false,
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState({
+    fullName: "Loading...",
+    avatar: null,
+  });
+
+  // ─── Fetch user profile ───
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userId = localStorage.getItem("userId"); // store userId on login
+        const userId = localStorage.getItem("userId");
         if (!userId) return;
+
         const data = await getUserProfile(userId);
-        setUser({ fullName: data.fullName, avatar: data.avatar });
+        setUser({
+          fullName: data?.fullName || "User",
+          avatar: data?.avatar || null,
+        });
       } catch (err) {
         console.error("Failed to fetch user profile", err);
       }
@@ -35,14 +86,25 @@ const ChangePassword = () => {
     fetchUser();
   }, []);
 
-  // handle form change
-  const handleChange = (key, val) => setForm((prev) => ({ ...prev, [key]: val }));
+  // ─── Form change ───
+  const handleChange = (key, value) => {
+    setForm((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
-  // handle password update
+  // ─── Toggle show/hide ───
+  const toggleShowPassword = (key) => {
+    setShowPassword((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  // ─── Submit password ───
   const handleSubmit = async () => {
     const { current, newPw, confirm } = form;
-
-    // ✅ Basic validation
     if (!current || !newPw || !confirm) {
       toast.error("Please fill in all fields.");
       return;
@@ -58,11 +120,11 @@ const ChangePassword = () => {
 
     try {
       setLoading(true);
-      const res = await API.patch("/auth/user/change-password", {
+      const res = await api.patch("/auth/user/change-password", {
         currentPassword: current,
         newPassword: newPw,
       });
-      toast.success(res.data.message || "Password updated successfully!");
+      toast.success(res.data?.message || "Password updated successfully!");
       setForm({ current: "", newPw: "", confirm: "" });
     } catch (err) {
       console.error(err);
@@ -73,33 +135,45 @@ const ChangePassword = () => {
     }
   };
 
-  // ─── Input Field Component ───
+  // ─── Input Field ───
   const Field = ({ label, fieldKey }) => (
-    <div className="flex flex-col gap-1.5 mb-5">
+    <div className="flex flex-col gap-1.5 mb-5 relative">
       <label className="text-sm font-semibold text-gray-700">{label}</label>
-      <input
-        type="password"
-        value={form[fieldKey]}
-        onChange={(e) => handleChange(fieldKey, e.target.value)}
-        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm outline-none
-                   focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-      />
+      <div className="relative">
+        <input
+          type={showPassword[fieldKey] ? "text" : "password"}
+          value={form[fieldKey]}
+          onChange={(e) => handleChange(fieldKey, e.target.value)}
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm
+                     outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all pr-10"
+        />
+        <button
+          type="button"
+          onClick={() => toggleShowPassword(fieldKey)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 focus:outline-none z-10"
+        >
+          <EyeIcon show={showPassword[fieldKey]} />
+        </button>
+      </div>
     </div>
   );
 
   return (
-    <div className="flex justify-center min-h-screen items-center bg-gray-50 p-4">
+    <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
       <Toaster position="top-right" />
       <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 w-full max-w-md">
-
         {/* User avatar */}
         <div className="text-center mb-6">
           <div
-            className="w-18 h-18 mx-auto mb-4 rounded-full bg-purple-100 flex items-center justify-center overflow-hidden"
+            className="mx-auto mb-4 rounded-full bg-purple-100 flex items-center justify-center overflow-hidden"
             style={{ width: 72, height: 72 }}
           >
             {user.avatar ? (
-              <img src={user.avatar} alt="avatar" className="w-full h-full object-cover" />
+              <img
+                src={user.avatar}
+                alt="avatar"
+                className="w-full h-full object-cover"
+              />
             ) : (
               <span className="text-4xl">{user.fullName?.charAt(0)}</span>
             )}
@@ -115,15 +189,20 @@ const ChangePassword = () => {
 
         {/* Submit Button */}
         <button
+          type="button"
           onClick={handleSubmit}
           disabled={loading}
           className="w-full py-4 rounded-xl text-white font-bold text-base flex items-center justify-center gap-2
-                     hover:opacity-90 transition-opacity mt-1"
+                     hover:opacity-90 transition-opacity mt-1 disabled:opacity-60"
           style={{ background: "linear-gradient(135deg,#7c6ff7,#6c63ff)" }}
         >
-          {loading ? "Updating..." : <><RefreshIco /> Update Password</>}
+          {loading ? "Updating..." : (
+            <>
+              <RefreshIco />
+              Update Password
+            </>
+          )}
         </button>
-
       </div>
     </div>
   );

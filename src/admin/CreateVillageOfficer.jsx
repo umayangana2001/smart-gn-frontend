@@ -1,15 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { createGN } from "../services/adminService";
-
-const divisions = [
-  "Colombo North",
-  "Colombo South",
-  "Gampaha East",
-  "Kandy Central",
-  "Negombo",
-  "Kurunegala",
-];
+import {
+  getProvinces,
+  getDistricts,
+  getDivisions,
+} from "../services/locationService";
 
 const CreateVillageOfficer = () => {
   const [form, setForm] = useState({
@@ -17,69 +13,116 @@ const CreateVillageOfficer = () => {
     nic: "",
     email: "",
     phone: "",
-    division: "",
+    provinceId: "",
+    districtId: "",
+    divisionId: "",
     password: "",
   });
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // -------------------------------
-  // Handle input change
-  // -------------------------------
-  const handleChange = (key, value) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [divisions, setDivisions] = useState([]);
 
-    // remove error while typing
-    setErrors((prev) => ({ ...prev, [key]: "" }));
+  // ---------------------------
+  // Load Provinces
+  // ---------------------------
+  useEffect(() => {
+    fetchProvinces();
+  }, []);
+
+  const fetchProvinces = async () => {
+    try {
+      const data = await getProvinces();
+      setProvinces(data);
+    } catch {
+      toast.error("Failed to load provinces");
+    }
   };
 
-  // -------------------------------
-  // Validation function
-  // -------------------------------
+  const fetchDistricts = async (provinceId) => {
+    try {
+      const data = await getDistricts(provinceId);
+      setDistricts(data);
+      setDivisions([]);
+    } catch {
+      toast.error("Failed to load districts");
+    }
+  };
+
+  const fetchDivisions = async (districtId) => {
+    try {
+      const data = await getDivisions(districtId);
+      setDivisions(data);
+    } catch {
+      toast.error("Failed to load divisions");
+    }
+  };
+
+  // ---------------------------
+  // Handle Change
+  // ---------------------------
+  const handleChange = (key, value) => {
+    setForm((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [key]: "",
+    }));
+
+    if (key === "provinceId") {
+      fetchDistricts(value);
+      setForm((prev) => ({
+        ...prev,
+        provinceId: value,
+        districtId: "",
+        divisionId: "",
+      }));
+    }
+
+    if (key === "districtId") {
+      fetchDivisions(value);
+      setForm((prev) => ({
+        ...prev,
+        districtId: value,
+        divisionId: "",
+      }));
+    }
+  };
+
+  // ---------------------------
+  // Validation
+  // ---------------------------
   const validate = () => {
     const newErrors = {};
 
-    if (!form.fullName.trim()) {
+    if (!form.fullName.trim())
       newErrors.fullName = "Full name is required";
-    }
 
-    if (!form.nic.trim()) {
-      newErrors.nic = "NIC is required";
-    } else if (!/^([0-9]{9}[vVxX]|[0-9]{12})$/.test(form.nic)) {
-      newErrors.nic = "Invalid NIC format";
-    }
-
-    if (!form.email.trim()) {
+    if (!form.email.trim())
       newErrors.email = "Email is required";
-    } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
-      newErrors.email = "Invalid email address";
-    }
 
-    if (!form.phone.trim()) {
-      newErrors.phone = "Phone number is required";
-    } else if (!/^[0-9]{10}$/.test(form.phone)) {
-      newErrors.phone = "Phone must be 10 digits";
-    }
-
-    if (!form.division) {
-      newErrors.division = "Please select division";
-    }
-
-    if (!form.password) {
+    if (!form.password)
       newErrors.password = "Password is required";
-    } else if (form.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
+
+    if (!form.districtId)
+      newErrors.districtId = "Select district";
+
+    if (!form.divisionId)
+      newErrors.divisionId = "Select division";
 
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
-  // -------------------------------
+  // ---------------------------
   // Submit
-  // -------------------------------
+  // ---------------------------
   const handleSubmit = async () => {
     if (!validate()) {
       toast.error("Please fix form errors");
@@ -89,130 +132,164 @@ const CreateVillageOfficer = () => {
     try {
       setLoading(true);
 
-      const res = await createGN(form);
+      const selectedDistrict = districts.find(
+        (d) => d.id === form.districtId
+      );
 
-      toast.success(res.message || "Village Officer created successfully");
+      const selectedDivision = divisions.find(
+        (d) => d.id === form.divisionId
+      );
 
-      // reset form
+      // ✅ Send ONLY allowed fields
+      const payload = {
+        email: form.email,
+        password: form.password,
+        fullName: form.fullName,
+        district: selectedDistrict?.name || "",
+        division: selectedDivision?.name || "",
+      };
+
+      await createGN(payload);
+
+      toast.success("Village Officer created successfully");
+
+      // 🔄 Reset form completely
       setForm({
         fullName: "",
         nic: "",
         email: "",
         phone: "",
-        division: "",
+        provinceId: "",
+        districtId: "",
+        divisionId: "",
         password: "",
       });
 
-      setErrors({});
+      setDistricts([]);
+      setDivisions([]);
+
     } catch (error) {
-      const msg =
+      toast.error(
         error.response?.data?.message ||
-        "Failed to create Village Officer";
-      toast.error(msg);
+        "Failed to create Village Officer"
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // -------------------------------
+  // ---------------------------
   // Input Component
-  // -------------------------------
+  // ---------------------------
   const InputField = ({ label, fieldKey, type = "text" }) => (
     <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-semibold text-gray-700">{label}</label>
+      <label className="text-sm font-semibold text-gray-700">
+        {label}
+      </label>
       <input
         type={type}
         value={form[fieldKey]}
-        onChange={(e) => handleChange(fieldKey, e.target.value)}
-        className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all
-        ${errors[fieldKey]
-            ? "border-red-500 bg-red-50 focus:ring-red-200"
-            : "border-gray-200 bg-gray-50 focus:border-indigo-500 focus:ring-indigo-100"
-          }`}
+        onChange={(e) =>
+          handleChange(fieldKey, e.target.value)
+        }
+        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none"
       />
       {errors[fieldKey] && (
-        <span className="text-xs text-red-500">{errors[fieldKey]}</span>
+        <span className="text-xs text-red-500">
+          {errors[fieldKey]}
+        </span>
       )}
     </div>
   );
 
   return (
     <div className="flex justify-center">
-      <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 w-full max-w-3xl">
+      <div className="bg-white rounded-2xl p-8 shadow-sm border w-full max-w-3xl">
 
-        {/* Header */}
         <div className="flex items-center gap-3 mb-7">
           <span className="text-2xl">👤</span>
-          <h2 className="text-xl font-bold text-gray-900">
+          <h2 className="text-xl font-bold">
             Create Village Officer
           </h2>
         </div>
 
-        {/* Form Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
           <InputField label="Full Name" fieldKey="fullName" />
           <InputField label="NIC Number" fieldKey="nic" />
-          <InputField label="Email" fieldKey="email" type="email" />
-          <InputField label="Phone" fieldKey="phone" type="tel" />
+          <InputField label="Email" fieldKey="email" />
+          <InputField label="Phone" fieldKey="phone" />
+
+          {/* Province */}
+          <select
+            value={form.provinceId}
+            onChange={(e) =>
+              handleChange("provinceId", e.target.value)
+            }
+            className="col-span-2 px-4 py-3 rounded-xl border bg-gray-50"
+          >
+            <option value="">Select Province</option>
+            {provinces.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+
+          {/* District */}
+          <select
+            value={form.districtId}
+            onChange={(e) =>
+              handleChange("districtId", e.target.value)
+            }
+            disabled={!form.provinceId}
+            className="col-span-2 px-4 py-3 rounded-xl border bg-gray-50"
+          >
+            <option value="">Select District</option>
+            {districts.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name}
+              </option>
+            ))}
+          </select>
 
           {/* Division */}
-          <div className="sm:col-span-2 flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-gray-700">
-              Division
-            </label>
-            <select
-              value={form.division}
-              onChange={(e) => handleChange("division", e.target.value)}
-              className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all
-              ${errors.division
-                  ? "border-red-500 bg-red-50"
-                  : "border-gray-200 bg-gray-50"
-                }`}
-            >
-              <option value="">Select Division</option>
-              {divisions.map((d) => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
-            </select>
-            {errors.division && (
-              <span className="text-xs text-red-500">{errors.division}</span>
-            )}
-          </div>
+          <select
+            value={form.divisionId}
+            onChange={(e) =>
+              handleChange("divisionId", e.target.value)
+            }
+            disabled={!form.districtId}
+            className="col-span-2 px-4 py-3 rounded-xl border bg-gray-50"
+          >
+            <option value="">Select Division</option>
+            {divisions.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name}
+              </option>
+            ))}
+          </select>
 
-          {/* Password */}
-          <div className="sm:col-span-2 flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-gray-700">
-              Initial Password
-            </label>
-            <input
-              type="password"
-              value={form.password}
-              onChange={(e) => handleChange("password", e.target.value)}
-              className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all
-              ${errors.password
-                  ? "border-red-500 bg-red-50"
-                  : "border-gray-200 bg-gray-50"
-                }`}
-            />
-            {errors.password && (
-              <span className="text-xs text-red-500">{errors.password}</span>
-            )}
-          </div>
+          <InputField
+            label="Initial Password"
+            fieldKey="password"
+            type="password"
+          />
 
         </div>
 
-        {/* Submit */}
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="mt-7 w-full py-4 rounded-xl text-white font-bold text-base flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
-          style={{ background: "linear-gradient(135deg,#7c6ff7,#6c63ff)" }}
+          className="mt-7 w-full py-4 rounded-xl text-white font-bold"
+          style={{
+            background:
+              "linear-gradient(135deg,#7c6ff7,#6c63ff)",
+          }}
         >
           {loading ? "Creating..." : "+ Create Officer Account"}
         </button>
+
       </div>
     </div>
   );
