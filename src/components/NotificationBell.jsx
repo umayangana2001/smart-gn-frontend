@@ -139,11 +139,12 @@ const NotificationBell = () => {
           )}
 
           {/* Empty State */}
-          {!loading && notifications.length === 0 && (
-            <p className="text-sm text-gray-500 text-center py-3">
-              No notifications
-            </p>
-          )}
+{!loading && notifications.length === 0 && (
+  <p className="text-sm text-gray-400 text-center py-4">
+    No notifications yet
+  </p>
+)}
+
 
           {/* Notification List */}
           {!loading &&
