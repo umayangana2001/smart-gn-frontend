@@ -1,16 +1,16 @@
 import API from "./api";
 
-export const getAllProvinces = async () => {
+export const getProvinces = async () => {
   const response = await API.get("/locations/provinces");
   return response.data;
 };
 
-export const getDistrictsByProvince = async (provinceId) => {
+export const getDistricts = async (provinceId) => {
   const response = await API.get(`/locations/districts/${provinceId}`);
   return response.data;
 };
 
-export const getDivisionsByDistrict = async (districtId) => {
+export const getDivisions = async (districtId) => {
   const response = await API.get(`/locations/divisions/${districtId}`);
   return response.data;
 };
