@@ -4,10 +4,11 @@ import toast, { Toaster } from "react-hot-toast";
 
 import { getMyProfile, updateMyProfile } from "../services/authService";
 import {
-  getAllProvinces,
-  getDistrictsByProvince,
-  getDivisionsByDistrict,
+  getProvinces,
+  getDistricts,
+  getDivisions
 } from "../services/locationService";
+
 
 const Profile = ({ userId }) => {
   const [form, setForm] = useState({
@@ -63,7 +64,7 @@ const Profile = ({ userId }) => {
 
   const loadProvinces = async () => {
     try {
-      const provinces = await getAllProvinces();
+      const provinces = await getProvinces();
       setLocations((prev) => ({ ...prev, provinces }));
     } catch (err) {
       console.error("Error fetching provinces:", err);
@@ -72,7 +73,7 @@ const Profile = ({ userId }) => {
 
   const loadDistricts = async (provinceId) => {
     try {
-      const districts = await getDistrictsByProvince(provinceId);
+      const districts = await getDistricts(provinceId);
       setLocations((prev) => ({ ...prev, districts, divisions: [] }));
     } catch (err) {
       console.error("Error fetching districts:", err);
@@ -81,7 +82,7 @@ const Profile = ({ userId }) => {
 
   const loadDivisions = async (districtId) => {
     try {
-      const divisions = await getDivisionsByDistrict(districtId);
+      const divisions = await getDivisions(districtId);
       setLocations((prev) => ({ ...prev, divisions }));
     } catch (err) {
       console.error("Error fetching divisions:", err);
