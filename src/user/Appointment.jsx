@@ -11,10 +11,10 @@ const Appointment = () => {
     mobile: "",
     province: "",
     district: "",
-    division: "", 
+    division: "",
     officerId: "",
-    officerName: "", // Display purpose only
-    appointmentType: "GENERAL_INQUIRY", 
+    officerName: "", 
+    appointmentType: "GENERAL_INQUIRY",
     date: "",
     time: "",
     reason: ""
@@ -26,7 +26,7 @@ const Appointment = () => {
   const [busySlots, setBusySlots] = useState([]);
   const [submitted, setSubmitted] = useState(false);
 
-const appointmentTypes = [
+  const appointmentTypes = [
     { id: "GENERAL_INQUIRY", name: "General Inquiry" },
     { id: "DOCUMENT_REQUEST", name: "Document Request" },
     { id: "COMPLAINT", name: "Complaint / Grievance" },
@@ -45,32 +45,56 @@ const appointmentTypes = [
   useEffect(() => {
     if (formData.province) {
       getDistrictsByProvince(formData.province).then(setDistricts).catch(console.error);
-      setFormData(prev => ({ ...prev, district: "", division: "", officerId: "", officerName: "", time: "" }));
+
+      setFormData(prev => ({
+        ...prev,
+        district: "",
+        division: "",
+        officerId: "",
+        officerName: "",
+        time: "",
+        date: ""
+      }));
+      setDistricts([]);
       setDivisions([]);
+      setBusySlots([]);
     }
   }, [formData.province]);
 
   useEffect(() => {
     if (formData.district) {
       getDivisionsByDistrict(formData.district).then(setDivisions).catch(console.error);
-      setFormData(prev => ({ ...prev, division: "", officerId: "", officerName: "", time: "" }));
+
+      setFormData(prev => ({
+        ...prev,
+        division: "",
+        officerId: "",
+        officerName: "",
+        time: "",
+        date: ""
+      }));
+      setDivisions([]);
+      setBusySlots([]);
     }
   }, [formData.district]);
 
-  // Division select කරපු ගමන් Officer ව auto-fetch කරලා set කරනවා
-  useEffect(() => {
+
+ useEffect(() => {
     if (formData.division) {
       getOfficersByDivision(formData.division).then(officers => {
         if (officers && officers.length > 0) {
-          // Division එකට අදාළ පළවෙනි officer ව ගන්නවා
           setFormData(prev => ({ 
             ...prev, 
             officerId: officers[0].id, 
             officerName: officers[0].fullName,
             time: "" 
           }));
+        } else {
+          setFormData(prev => ({ ...prev, officerId: "", officerName: "", time: "" }));
         }
       }).catch(console.error);
+    } else {
+      setFormData(prev => ({ ...prev, officerId: "", officerName: "", time: "" }));
     }
   }, [formData.division]);
 
@@ -215,11 +239,10 @@ const appointmentTypes = [
                         key={slot}
                         disabled={isBusy}
                         onClick={() => setFormData({ ...formData, time: slot })}
-                        className={`py-2 rounded-xl border transition-all ${
-                          isBusy ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed" :
-                          formData.time === slot ? "bg-purple-600 text-white shadow-md border-purple-600" : 
-                          "bg-white border-gray-200 hover:border-purple-200"
-                        }`}
+                        className={`py-2 rounded-xl border transition-all ${isBusy ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed" :
+                          formData.time === slot ? "bg-purple-600 text-white shadow-md border-purple-600" :
+                            "bg-white border-gray-200 hover:border-purple-200"
+                          }`}
                       >
                         {slot}
                       </button>
