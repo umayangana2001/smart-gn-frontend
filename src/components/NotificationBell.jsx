@@ -29,19 +29,38 @@ const NotificationBell = () => {
     }
   };
 
-  const fetchNotifications = async () => {
-    try {
-      const res = await axios.get(
-        `${API}/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setNotifications(res.data);
-    } catch (err) {
-      console.error("Fetch notifications error:", err.message);
-    }
-  };
+ const fetchNotifications = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id;
+
+    if (!userId) return;
+
+    const res = await axios.get(
+      `${API}/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // Sort newest first
+    const sorted = res.data.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    setNotifications(sorted);
+
+  } catch (err) {
+    console.error(
+      "Fetch notifications error:",
+      err.response?.data || err.message
+    );
+  }
+};
+
 
   const markAsRead = async (id) => {
     try {
