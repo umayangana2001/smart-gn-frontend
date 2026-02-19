@@ -3,7 +3,8 @@ import { FiCheck } from "react-icons/fi";
 import toast, { Toaster } from "react-hot-toast";
 
 import { getMyProfile, updateMyProfile } from "../services/authService";
-import { getProvinces, getDistricts, getDivisions } from "../services/locationService";
+import { getDistricts, getDivisions, getProvinces } from "../services/locationService";
+
 
 const Profile = ({ userId }) => {
   const [form, setForm] = useState({
