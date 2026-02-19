@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { getUserProfile } from "../services/authService";
-import api from "../services/api"; // Axios instance
+import API from "../services/api";
+
 
 // ─── Refresh Icon ───
 const RefreshIco = () => (

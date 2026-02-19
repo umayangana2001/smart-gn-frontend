@@ -15,7 +15,7 @@ export const registerUser = async (userData) => {
 
 // 🔹 get single profile
 export const getUserProfile = async (userId) => {
-  const res = await api.get(`/user-profile/${userId}`);
+  const res = await API.get(`/user-profile/${userId}`);
   return res.data;
 };
 

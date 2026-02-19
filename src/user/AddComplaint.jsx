@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import { FiSend, FiAlertCircle, FiType, FiTag, FiMessageSquare } from "react-icons/fi";
+import { FiSend, FiAlertCircle, FiType, FiMessageSquare } from "react-icons/fi"; 
+import { createComplaint } from "../services/complaintService";
 
 const AddComplaint = () => {
-  const [formData, setFormData] = useState({ title: "", category: "General", description: "" });
+  const [formData, setFormData] = useState({ title: "", description: "" });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false); 
 
   const validate = () => {
     let newErrors = {};
@@ -15,12 +17,20 @@ const AddComplaint = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => { 
     e.preventDefault();
     if (validate()) {
-      console.log("Complaint Submitted:", formData);
-      alert("Complaint submitted successfully!");
-      setFormData({ title: "", category: "General", description: "" });
+      setLoading(true);
+      try {
+        await createComplaint(formData); 
+        alert("Complaint submitted successfully!");
+        setFormData({ title: "", description: "" });
+      } catch (error) {
+        console.error("Submission error:", error);
+        alert("Failed to submit complaint. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -55,7 +65,7 @@ const AddComplaint = () => {
               )}
             </div>
 
-            <div className="col-span-1 md:col-span-2">
+            {/* <div className="col-span-1 md:col-span-2">
               <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
                 <FiTag className="text-purple-500" /> Category
               </label>
@@ -69,7 +79,8 @@ const AddComplaint = () => {
                 <option>Water/Electricity</option>
                 <option>Public Nuisance</option>
               </select>
-            </div>
+            </div> 
+            */}
 
             <div className="col-span-1 md:col-span-2">
               <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
@@ -94,11 +105,12 @@ const AddComplaint = () => {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              disabled={loading} 
               type="submit"
               style={{ background: "linear-gradient(135deg,#7c6ff7,#6c63ff)" }}
-              className="text-white font-bold px-10 py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-purple-100 w-full md:w-auto"
+              className={`text-white font-bold px-10 py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-purple-100 w-full md:w-auto ${loading ? 'opacity-70' : ''}`}
             >
-              <FiSend /> Submit Complaint
+              <FiSend /> {loading ? "Submitting..." : "Submit Complaint"}
             </motion.button>
           </div>
         </form>
