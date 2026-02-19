@@ -13,7 +13,7 @@ import VODashboard from "./villageOfficer/VODashboard";
 import UserDashboard from "./user/UserDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
-
+import ServiceTypes from "./pages/admin/ServiceTypes";
 function App() {
   const location = useLocation();
 
@@ -21,7 +21,7 @@ function App() {
     <AnimatePresence mode="wait">
       <Toaster position="top-right" reverseOrder={false} />
       <Routes location={location} key={location.pathname}>
-
+<Route path="/admin/service-types" element={<ServiceTypes />} />
         {/* Auth Pages */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
