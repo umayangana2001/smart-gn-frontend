@@ -7,6 +7,21 @@ import {
   getDivisions,
 } from "../services/locationService";
 
+const InputField = ({ label, fieldKey, type = "text", form, errors, handleChange }) => (
+  <div className="flex flex-col gap-1.5">
+    <label className="text-sm font-semibold text-gray-700">{label}</label>
+    <input
+      type={type}
+      value={form[fieldKey]}
+      onChange={(e) => handleChange(fieldKey, e.target.value)}
+      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none"
+    />
+    {errors[fieldKey] && (
+      <span className="text-xs text-red-500">{errors[fieldKey]}</span>
+    )}
+  </div>
+);
+
 const CreateVillageOfficer = () => {
   const [form, setForm] = useState({
     fullName: "",
@@ -26,9 +41,6 @@ const CreateVillageOfficer = () => {
   const [districts, setDistricts] = useState([]);
   const [divisions, setDivisions] = useState([]);
 
-  // ---------------------------
-  // Load Provinces
-  // ---------------------------
   useEffect(() => {
     fetchProvinces();
   }, []);
@@ -61,9 +73,6 @@ const CreateVillageOfficer = () => {
     }
   };
 
-  // ---------------------------
-  // Handle Change
-  // ---------------------------
   const handleChange = (key, value) => {
     setForm((prev) => ({
       ...prev,
@@ -95,34 +104,19 @@ const CreateVillageOfficer = () => {
     }
   };
 
-  // ---------------------------
-  // Validation
-  // ---------------------------
   const validate = () => {
     const newErrors = {};
 
-    if (!form.fullName.trim())
-      newErrors.fullName = "Full name is required";
-
-    if (!form.email.trim())
-      newErrors.email = "Email is required";
-
-    if (!form.password)
-      newErrors.password = "Password is required";
-
-    if (!form.districtId)
-      newErrors.districtId = "Select district";
-
-    if (!form.divisionId)
-      newErrors.divisionId = "Select division";
+    if (!form.fullName.trim()) newErrors.fullName = "Full name is required";
+    if (!form.email.trim()) newErrors.email = "Email is required";
+    if (!form.password) newErrors.password = "Password is required";
+    if (!form.districtId) newErrors.districtId = "Select district";
+    if (!form.divisionId) newErrors.divisionId = "Select division";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // ---------------------------
-  // Submit
-  // ---------------------------
   const handleSubmit = async () => {
     if (!validate()) {
       toast.error("Please fix form errors");
@@ -140,7 +134,6 @@ const CreateVillageOfficer = () => {
         (d) => d.id === form.divisionId
       );
 
-      // ✅ Send ONLY allowed fields
       const payload = {
         email: form.email,
         password: form.password,
@@ -153,7 +146,6 @@ const CreateVillageOfficer = () => {
 
       toast.success("Village Officer created successfully");
 
-      // 🔄 Reset form completely
       setForm({
         fullName: "",
         nic: "",
@@ -170,62 +162,27 @@ const CreateVillageOfficer = () => {
 
     } catch (error) {
       toast.error(
-        error.response?.data?.message ||
-        "Failed to create Village Officer"
+        error.response?.data?.message || "Failed to create Village Officer"
       );
     } finally {
       setLoading(false);
     }
   };
 
-  // ---------------------------
-  // Input Component
-  // ---------------------------
-  const InputField = ({ label, fieldKey, type = "text" }) => (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-semibold text-gray-700">
-        {label}
-      </label>
-      <input
-        type={type}
-        value={form[fieldKey]}
-        onChange={(e) =>
-          handleChange(fieldKey, e.target.value)
-        }
-        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none"
-      />
-      {errors[fieldKey] && (
-        <span className="text-xs text-red-500">
-          {errors[fieldKey]}
-        </span>
-      )}
-    </div>
-  );
-
   return (
     <div className="flex justify-center">
       <div className="bg-white rounded-2xl p-8 shadow-sm border w-full max-w-3xl">
-
-        <div className="flex items-center gap-3 mb-7">
-          <span className="text-2xl">👤</span>
-          <h2 className="text-xl font-bold">
-            Create Village Officer
-          </h2>
-        </div>
+        <h2 className="text-xl font-bold mb-6">Create Village Officer</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <InputField label="Full Name" fieldKey="fullName" form={form} errors={errors} handleChange={handleChange} />
+          <InputField label="NIC Number" fieldKey="nic" form={form} errors={errors} handleChange={handleChange} />
+          <InputField label="Email" fieldKey="email" form={form} errors={errors} handleChange={handleChange} />
+          <InputField label="Phone" fieldKey="phone" form={form} errors={errors} handleChange={handleChange} />
 
-          <InputField label="Full Name" fieldKey="fullName" />
-          <InputField label="NIC Number" fieldKey="nic" />
-          <InputField label="Email" fieldKey="email" />
-          <InputField label="Phone" fieldKey="phone" />
-
-          {/* Province */}
           <select
             value={form.provinceId}
-            onChange={(e) =>
-              handleChange("provinceId", e.target.value)
-            }
+            onChange={(e) => handleChange("provinceId", e.target.value)}
             className="col-span-2 px-4 py-3 rounded-xl border bg-gray-50"
           >
             <option value="">Select Province</option>
@@ -236,12 +193,9 @@ const CreateVillageOfficer = () => {
             ))}
           </select>
 
-          {/* District */}
           <select
             value={form.districtId}
-            onChange={(e) =>
-              handleChange("districtId", e.target.value)
-            }
+            onChange={(e) => handleChange("districtId", e.target.value)}
             disabled={!form.provinceId}
             className="col-span-2 px-4 py-3 rounded-xl border bg-gray-50"
           >
@@ -253,12 +207,9 @@ const CreateVillageOfficer = () => {
             ))}
           </select>
 
-          {/* Division */}
           <select
             value={form.divisionId}
-            onChange={(e) =>
-              handleChange("divisionId", e.target.value)
-            }
+            onChange={(e) => handleChange("divisionId", e.target.value)}
             disabled={!form.districtId}
             className="col-span-2 px-4 py-3 rounded-xl border bg-gray-50"
           >
@@ -273,23 +224,21 @@ const CreateVillageOfficer = () => {
           <InputField
             label="Initial Password"
             fieldKey="password"
-            type="password"
+            type="text"
+            form={form}
+            errors={errors}
+            handleChange={handleChange}
           />
-
         </div>
 
         <button
           onClick={handleSubmit}
           disabled={loading}
           className="mt-7 w-full py-4 rounded-xl text-white font-bold"
-          style={{
-            background:
-              "linear-gradient(135deg,#7c6ff7,#6c63ff)",
-          }}
+          style={{ background: "linear-gradient(135deg,#7c6ff7,#6c63ff)" }}
         >
           {loading ? "Creating..." : "+ Create Officer Account"}
         </button>
-
       </div>
     </div>
   );
