@@ -3,6 +3,7 @@ import { FiCheck } from "react-icons/fi";
 import toast, { Toaster } from "react-hot-toast";
 
 import { getMyProfile, updateMyProfile } from "../services/authService";
+import { getProvinces, getDistricts, getDivisions } from "../services/locationService";
 
 const Profile = ({ userId }) => {
   const [form, setForm] = useState({
@@ -16,13 +17,22 @@ const Profile = ({ userId }) => {
     divisionId: "",
     birthday: "",
   });
-  const [loading, setLoading] = useState(true);
 
+  const [loading, setLoading] = useState(true);
+  const [locations, setLocations] = useState({
+    provinces: [],
+    districts: [],
+    divisions: [],
+  });
+
+  // Load profile and provinces on mount
   useEffect(() => {
-    if (!userId) return; // Prevent calling API with undefined
+    if (!userId) return;
     fetchProfile();
+    loadProvinces();
   }, [userId]);
 
+  // Fetch user profile
   const fetchProfile = async () => {
     try {
       const data = await getMyProfile(userId);
@@ -37,6 +47,10 @@ const Profile = ({ userId }) => {
         divisionId: data.divisionId || "",
         birthday: data.birthday ? data.birthday.split("T")[0] : "",
       });
+
+      // Load districts & divisions if profile already has IDs
+      if (data.provinceId) await loadDistricts(data.provinceId);
+      if (data.districtId) await loadDivisions(data.districtId);
     } catch (err) {
       console.error("Error fetching profile:", err);
       toast.error("Failed to load profile");
@@ -45,8 +59,49 @@ const Profile = ({ userId }) => {
     }
   };
 
+  // Load provinces
+  const loadProvinces = async () => {
+    try {
+      const provinces = await getProvinces();
+      setLocations((prev) => ({ ...prev, provinces }));
+    } catch (err) {
+      console.error("Error fetching provinces:", err);
+    }
+  };
+
+  // Load districts based on province
+  const loadDistricts = async (provinceId) => {
+    try {
+      const districts = await getDistricts(provinceId);
+      setLocations((prev) => ({ ...prev, districts, divisions: [] }));
+    } catch (err) {
+      console.error("Error fetching districts:", err);
+    }
+  };
+
+  // Load divisions based on district
+  const loadDivisions = async (districtId) => {
+    try {
+      const divisions = await getDivisions(districtId);
+      setLocations((prev) => ({ ...prev, divisions }));
+    } catch (err) {
+      console.error("Error fetching divisions:", err);
+    }
+  };
+
   const handleChange = (key, val) => {
     setForm((prev) => ({ ...prev, [key]: val }));
+
+    // Cascade dropdowns
+    if (key === "provinceId") {
+      handleChange("districtId", "");
+      handleChange("divisionId", "");
+      loadDistricts(val);
+    }
+    if (key === "districtId") {
+      handleChange("divisionId", "");
+      loadDivisions(val);
+    }
   };
 
   const handleSubmit = async () => {
@@ -54,15 +109,35 @@ const Profile = ({ userId }) => {
       toast.error("User not logged in");
       return;
     }
+
+    if (!form.address.trim()) {
+      toast.error("Address must be provided");
+      return;
+    }
+    if (!form.provinceId || !form.districtId || !form.divisionId) {
+      toast.error("Please select valid province, district, and division");
+      return;
+    }
+
+    const payload = {
+      fullName: form.fullName,
+      nic: form.nic,
+      email: form.email,
+      telephone: form.phone,
+      address: form.address,
+      provinceId: form.provinceId,
+      districtId: form.districtId,
+      divisionId: form.divisionId,
+      birthday: form.birthday,
+    };
+
     try {
-      await updateMyProfile(userId, {
-        ...form,
-        telephone: form.phone,
-      });
+      await updateMyProfile(userId, payload);
       toast.success("Profile updated successfully!");
     } catch (err) {
       console.error("Error updating profile:", err);
-      toast.error("Failed to update profile");
+      const msg = err.response?.data?.message || "Failed to update profile";
+      toast.error(msg);
     }
   };
 
@@ -114,6 +189,51 @@ const Profile = ({ userId }) => {
                 rows={3}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all resize-none"
               />
+            </div>
+
+            {/* Province */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Province</label>
+              <select
+                value={form.provinceId}
+                onChange={(e) => handleChange("provinceId", e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+              >
+                <option value="">Select Province</option>
+                {locations.provinces.map((p) => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* District */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">District</label>
+              <select
+                value={form.districtId}
+                onChange={(e) => handleChange("districtId", e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+              >
+                <option value="">Select District</option>
+                {locations.districts.map((d) => (
+                  <option key={d.id} value={d.id}>{d.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Division */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Division</label>
+              <select
+                value={form.divisionId}
+                onChange={(e) => handleChange("divisionId", e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+              >
+                <option value="">Select Division</option>
+                {locations.divisions.map((div) => (
+                  <option key={div.id} value={div.id}>{div.name}</option>
+                ))}
+              </select>
             </div>
           </div>
 

@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { getDashboardStats ,
   getAllGNs,
   deactivateGN,} from "../services/adminService";
+import Loader from "../components/Loader";
 
 const AdminDashboardContent = () => {
   const [stats, setStats] = useState(null);
@@ -67,7 +68,7 @@ const AdminDashboardContent = () => {
     loadGNs();
   }, []);
 
-  if (!stats) return <p>Loading...</p>;
+  if (!stats) return <Loader />;
 
   return (
     <div>
